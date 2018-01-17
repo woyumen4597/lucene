@@ -37,11 +37,7 @@ public class IndexSercher {
         //通配符
         //Query query = new WildcardQuery(term);
         //模糊查询
-        // Query query = new FuzzyQuery(term);
-        PhraseQuery.Builder builder = new PhraseQuery.Builder();
-        builder.add(new Term("文档","x"),1);
-        builder.add(new Term("文档","a"),3);
-        PhraseQuery query = builder.build();
+         Query query = new FuzzyQuery(term);
         long start = System.currentTimeMillis();
         TopDocs docs = searcher.search(query, 10);
         long end = System.currentTimeMillis();
