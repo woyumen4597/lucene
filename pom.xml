@@ -58,6 +58,20 @@
             <artifactId>ikAnalyzer</artifactId>
             <version>6.5.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.htmlparser/htmlparser -->
+        <dependency>
+            <groupId>org.htmlparser</groupId>
+            <artifactId>htmlparser</artifactId>
+            <version>1.6</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.sleepycat/je -->
+        <dependency>
+            <groupId>com.sleepycat</groupId>
+            <artifactId>je</artifactId>
+            <version>5.0.73</version>
+        </dependency>
+
 
         <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
         <dependency>

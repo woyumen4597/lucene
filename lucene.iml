@@ -28,6 +28,8 @@
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.4.8" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.10" level="project" />
     <orderEntry type="library" name="Maven: com.lucene:ikAnalyzer:6.5.0" level="project" />
+    <orderEntry type="library" name="Maven: org.htmlparser:htmlparser:1.6" level="project" />
+    <orderEntry type="library" name="Maven: com.sleepycat:je:5.0.73" level="project" />
     <orderEntry type="library" name="Maven: mysql:mysql-connector-java:5.1.44" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-web:1.5.9.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter:1.5.9.RELEASE" level="project" />
