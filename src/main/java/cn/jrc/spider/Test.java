@@ -28,9 +28,6 @@ public class Test {
         } finally {
             response.close();
         }
-
-
-
     }
 
 }

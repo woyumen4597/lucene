@@ -1,19 +1,15 @@
 package cn.jrc.spider;
 
-import java.io.Serializable;
 import java.security.Timestamp;
 import java.util.Date;
 
 /**
  * @author Created By Jrc
  * @version v.0.1
- * @date 2018/1/20 12:41
+ * @date 2018/1/23 14:12
  */
-public class CrawlUrl implements Serializable {
-    public CrawlUrl() {
-    }
+public class Url {
     private String oriUrl;
-
     private String url;
     private int urlNo;
     private int statusCode;
@@ -28,8 +24,8 @@ public class CrawlUrl implements Serializable {
     private Date timeToLive;
     private String title;
     private String type;
-    private String[] urlReferences;
-    private int layer; //crawer level (seed:0)
+    private Url[] urlReferences;
+    private int layer;  //fetch level
 
     public String getOriUrl() {
         return oriUrl;
@@ -151,11 +147,11 @@ public class CrawlUrl implements Serializable {
         this.type = type;
     }
 
-    public String[] getUrlReferences() {
+    public Url[] getUrlReferences() {
         return urlReferences;
     }
 
-    public void setUrlReferences(String[] urlReferences) {
+    public void setUrlReferences(Url[] urlReferences) {
         this.urlReferences = urlReferences;
     }
 
