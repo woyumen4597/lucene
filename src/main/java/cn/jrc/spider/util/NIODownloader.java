@@ -1,4 +1,4 @@
-package cn.jrc.spider;
+package cn.jrc.spider.util;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

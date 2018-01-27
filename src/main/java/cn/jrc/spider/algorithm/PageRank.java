@@ -1,4 +1,4 @@
-package cn.jrc.spider;
+package cn.jrc.spider.algorithm;
 
 import org.htmlparser.Parser;
 import org.htmlparser.filters.TagNameFilter;

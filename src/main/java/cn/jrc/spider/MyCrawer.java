@@ -1,10 +1,14 @@
 package cn.jrc.spider;
 
 
-import org.htmlparser.filters.LinkRegexFilter;
-import org.htmlparser.filters.LinkStringFilter;
+import cn.jrc.spider.util.Downloader;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
-import java.util.Set;
+import java.io.IOException;
+
 
 /**
  * @author Created By Jrc
@@ -12,9 +16,8 @@ import java.util.Set;
  * @date 2018/1/22 14:33
  */
 public class MyCrawer {
-    private ComputeUrl computeUrl = null;
     public MyCrawer(){
-        computeUrl = new PageRankComputeUrl();
+
     }
     /**
      * init url seeds
@@ -27,29 +30,33 @@ public class MyCrawer {
     }
 
     public void crawling(String[] seeds){
-        LinkStringFilter filter = new LinkStringFilter("(http://.+?\\.163\\.com/.+)\"");
         initCrawlerWithSeeds(seeds);
-        while(!LinkQueue.unVisitedUrlsEmpty()&&LinkQueue.getVisitedUrlNum()<=1000){
-            String visitUrl = (String) LinkQueue.unVisitedUrlDequeue();
-            if (visitUrl == null) {
-                continue;
-            }
-            DownloadFile downloader = new DownloadFile();
-            String content = downloader.downloadFile(visitUrl);
-            if(computeUrl.accept(visitUrl,content)){
-                continue;
-            }
-            LinkQueue.addVisitedUrl(visitUrl);
-            Set<String> links = HtmlParserTool.extractLinks(visitUrl, filter);
-            for (String link : links) {
-                LinkQueue.addUnvisitedUrl(link);
-            }
+        while(!LinkQueue.unVisitedUrlsEmpty()&&LinkQueue.getVisitedUrlNum()<=100){
+            String url = (String) LinkQueue.unVisitedUrlDequeue();
+            Downloader.download(url);
+            getUrls(url);
         }
     }
 
     public static void main(String[] args) {
         MyCrawer crawer = new MyCrawer();
-        crawer.crawling(new String[]{"http://news.163.com"});
+        crawer.crawling(new String[]{"https://stackoverflow.com/questions/"});
+    }
+
+    public void getUrls(String url){
+        Document document = null;
+        try {
+            document = Jsoup.connect(url).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Elements elements = document.select("a[href]");
+        for (Element element : elements) {
+            String link  = element.attr("abs:href");
+            if(link.trim().contains("/questions")){
+                LinkQueue.addUnvisitedUrl(link);
+            }
+        }
     }
 
 }

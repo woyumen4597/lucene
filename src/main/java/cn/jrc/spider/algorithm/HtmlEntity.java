@@ -1,4 +1,4 @@
-package cn.jrc.spider;
+package cn.jrc.spider.algorithm;
 
 import java.util.ArrayList;
 import java.util.List;

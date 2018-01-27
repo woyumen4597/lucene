@@ -1,4 +1,4 @@
-package cn.jrc.spider;
+package cn.jrc.spider.util;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
@@ -15,8 +15,8 @@ import java.util.concurrent.TimeUnit;
  * @version v.0.1
  * @date 2018/1/18 14:22
  */
-public class DownloadFile {
-    public String getFileNameByUrl(String url,String contentType){
+public class Downloader {
+    public static String getFileNameByUrl(String url,String contentType){
         //remove HTTP
         url = url.substring(7);
         // text/html
@@ -31,7 +31,7 @@ public class DownloadFile {
     }
 
 
-    public void saveToLocal(InputStream inputStream,String filePath){
+    public static void saveToLocal(InputStream inputStream,String filePath){
         try {
             DataOutputStream out = new DataOutputStream(new FileOutputStream(new File(filePath)));
             int len =0;
@@ -48,7 +48,7 @@ public class DownloadFile {
         }
     }
 
-    public String downloadFile(String url){
+    public static String download(String url,String directory){
         String filePath = null;
         HttpClientBuilder builder = HttpClientBuilder.create();
         builder.setConnectionTimeToLive(5, TimeUnit.SECONDS);
@@ -62,10 +62,9 @@ public class DownloadFile {
                 System.err.println("Method failed: "+statusLine);
                 filePath = null;
             }
-
             // handle response
             InputStream content = response.getEntity().getContent();
-            filePath = "./files/"+getFileNameByUrl(url,response.getFirstHeader("Content-type").getValue());
+            filePath = directory +getFileNameByUrl(url,response.getFirstHeader("Content-type").getValue());
             saveToLocal(content,filePath);
         } catch (IOException e) {
             e.printStackTrace();
@@ -73,8 +72,4 @@ public class DownloadFile {
         return filePath;
     }
 
-    public static void main(String[] args) {
-        String s = new DownloadFile().downloadFile("http://www.baidu.com");
-        System.out.println(s);
-    }
 }
