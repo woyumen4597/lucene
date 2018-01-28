@@ -33,7 +33,7 @@ public class MyCrawer {
         initCrawlerWithSeeds(seeds);
         while(!LinkQueue.unVisitedUrlsEmpty()&&LinkQueue.getVisitedUrlNum()<=100){
             String url = (String) LinkQueue.unVisitedUrlDequeue();
-            Downloader.download(url);
+            Downloader.download(url,"./files");
             getUrls(url);
         }
     }

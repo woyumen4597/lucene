@@ -34,7 +34,7 @@ public class PageSim {
         while (null != (node = lexer.nextNode())) {
             pageNodes2.add(node);
         }
-        double distance = PageDistance.LCS(pageNodes1.toArray(), pageNodes2.toArray());
+        double distance = LCS._LCS(pageNodes1.toArray(), pageNodes2.toArray());
         return (2.0*distance)/((double)pageNodes1.size()+(double)pageNodes2.size());
     }
 
