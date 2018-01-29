@@ -46,12 +46,17 @@ public class LCS<E> {
         return num[s1.length()][s2.length()];
     }
 
+    public static double Sim(String s1,String s2){
+        int lcs = LCS(s1,s2);
+        return lcs*1.0/Math.min(s1.length(),s2.length());
+    }
+
 
     public static void main(String[] args) {
         String s1 = "abcbdab";
         String s2 = "bdcaba";
         System.out.println(LCS(s1, s2));
         System.out.println(LCSDisplay(s1, s2));
-
+        System.out.println(Sim(s1,s2));
     }
 }
