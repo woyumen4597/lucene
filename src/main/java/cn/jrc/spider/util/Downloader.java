@@ -15,10 +15,14 @@ import java.util.concurrent.TimeUnit;
  * @version v.0.1
  * @date 2018/1/18 14:22
  */
-public class Downloader {
+public class Downloader{
     public static String getFileNameByUrl(String url,String contentType){
         //remove HTTP
-        url = url.substring(7);
+        if(url.startsWith("http://")) {
+            url = url.substring(7);
+        }else{ //remove https
+            url = url.substring(8);
+        }
         // text/html
         if(contentType.indexOf("html")!=-1){
             url = url.replaceAll("[\\?/:*|<>\"]","_")+".html";
@@ -64,7 +68,10 @@ public class Downloader {
             }
             // handle response
             InputStream content = response.getEntity().getContent();
-            filePath = directory +getFileNameByUrl(url,response.getFirstHeader("Content-type").getValue());
+            if(!directory.endsWith("/")){
+                directory = directory+"/";
+            }
+            filePath = directory + getFileNameByUrl(url,response.getFirstHeader("Content-type").getValue());
             saveToLocal(content,filePath);
         } catch (IOException e) {
             e.printStackTrace();
