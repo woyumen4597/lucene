@@ -6,31 +6,32 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import javax.validation.constraints.Null;
 import java.io.IOException;
 
 /**
- * stack overflow
- *
  * @author Created By Jrc
  * @version v.0.1
- * @date 2018/2/7 20:27
+ * @date 2018/2/14 16:50
  */
-public class STOCrawler extends Crawler implements Runnable {
+public class CSDNCrawler extends Crawler {
     @Override
     public void getUrls(String url) {
         Document document = null;
         try {
             document = Jsoup.connect(url).get();
             Elements elements = document.select("a[href]");
-            for (Element element : elements) {
-                String link = element.attr("abs:href");
-                if (link.trim().contains("/questions")) {
-                    LinkQueue.addUnvisitedUrl(link);
+            if (elements != null) {
+                for (Element element : elements) {
+                    String link = element.attr("abs:href");
+                    if (link.trim().contains("/questions")) {
+                        LinkQueue.addUnvisitedUrl(link);
+                    }
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
 
@@ -38,7 +39,7 @@ public class STOCrawler extends Crawler implements Runnable {
 
     @Override
     public void run() {
-        Crawler crawler = new STOCrawler();
-        crawler.crawling(new String[]{"https://stackoverflow.com/questions/"}, "./files");
+        Crawler crawler = new CSDNCrawler();
+        crawler.crawling(new String[]{"http://ask.csdn.net/"}, "./files");
     }
 }

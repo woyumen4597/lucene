@@ -9,13 +9,13 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 
 /**
- * stack overflow
+ * segment fault
  *
  * @author Created By Jrc
  * @version v.0.1
- * @date 2018/2/7 20:27
+ * @date 2018/2/14 16:39
  */
-public class STOCrawler extends Crawler implements Runnable {
+public class SGFCrawler extends Crawler {
     @Override
     public void getUrls(String url) {
         Document document = null;
@@ -24,7 +24,7 @@ public class STOCrawler extends Crawler implements Runnable {
             Elements elements = document.select("a[href]");
             for (Element element : elements) {
                 String link = element.attr("abs:href");
-                if (link.trim().contains("/questions")) {
+                if (link.trim().contains("/q")) {
                     LinkQueue.addUnvisitedUrl(link);
                 }
             }
@@ -34,11 +34,12 @@ public class STOCrawler extends Crawler implements Runnable {
             e.printStackTrace();
         }
 
+
     }
 
     @Override
     public void run() {
-        Crawler crawler = new STOCrawler();
-        crawler.crawling(new String[]{"https://stackoverflow.com/questions/"}, "./files");
+        Crawler crawler = new SGFCrawler();
+        crawler.crawling(new String[]{"https://segmentfault.com/questions/"}, "./files");
     }
 }

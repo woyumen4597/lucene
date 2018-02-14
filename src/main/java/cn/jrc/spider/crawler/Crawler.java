@@ -30,11 +30,11 @@ public abstract class Crawler implements Runnable{
         }
     }
 
-    public void crawling(String[] seeds){
+    public void crawling(String[] seeds,String dirPath){
         initCrawlerWithSeeds(seeds);
         while(!LinkQueue.unVisitedUrlsEmpty()&&LinkQueue.getVisitedUrlNum()<=100){
             String url = (String) LinkQueue.unVisitedUrlDequeue();
-            Downloader.download(url,"./files");
+            Downloader.download(url,dirPath);
             getUrls(url);
         }
     }
