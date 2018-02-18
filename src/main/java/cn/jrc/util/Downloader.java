@@ -1,4 +1,4 @@
-package cn.jrc.spider.util;
+package cn.jrc.util;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
