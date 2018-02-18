@@ -29,12 +29,9 @@ public class CSDNCrawler extends Crawler {
                     }
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override

@@ -28,9 +28,7 @@ public class SGFCrawler extends Crawler {
                     LinkQueue.addUnvisitedUrl(link);
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }catch (NullPointerException e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

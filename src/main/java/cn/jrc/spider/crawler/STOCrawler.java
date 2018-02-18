@@ -6,7 +6,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.IOException;
 
 /**
  * stack overflow
@@ -28,9 +27,7 @@ public class STOCrawler extends Crawler implements Runnable {
                     LinkQueue.addUnvisitedUrl(link);
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }catch (NullPointerException e){
+        } catch(Exception e){
             e.printStackTrace();
         }
 
