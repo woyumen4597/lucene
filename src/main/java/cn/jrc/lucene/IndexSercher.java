@@ -21,11 +21,6 @@ import java.nio.file.Paths;
  * @date 2018/1/11 19:39
  */
 public class IndexSercher {
-    public static void main(String[] args) throws IOException, ParseException {
-        String indexDir = "D://Lucene//test1";
-        String s = "xiamen";
-        search(indexDir,s);
-    }
     public static  void search(String indexDir,String s) throws IOException, ParseException {
         IndexReader reader = DirectoryReader.open(FSDirectory.open(Paths.get(indexDir)));
         IndexSearcher searcher = new IndexSearcher(reader);

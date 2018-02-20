@@ -12,18 +12,18 @@ import java.util.Date;
 public class PageInfo {
     private String url;
     private String title;
-    private String questions;
+    private String question;
     private ArrayList<String> answers;
     private ArrayList<String> tags;
-    private Date modifiedTime;
+    private Date date;
     private String description;
 
-    public String getQuestions() {
-        return questions;
+    public String getQuestion() {
+        return question;
     }
 
-    public void setQuestions(String questions) {
-        this.questions = questions;
+    public void setQuestion(String question) {
+        this.question = question;
     }
 
     public ArrayList<String> getAnswers() {
@@ -52,13 +52,6 @@ public class PageInfo {
     }
 
 
-    public Date getModifiedTime() {
-        return modifiedTime;
-    }
-
-    public void setModifiedTime(Date modifiedTime) {
-        this.modifiedTime = modifiedTime;
-    }
 
     public String getDescription() {
         return description;
@@ -74,5 +67,13 @@ public class PageInfo {
 
     public void setTags(ArrayList<String> tags) {
         this.tags = tags;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

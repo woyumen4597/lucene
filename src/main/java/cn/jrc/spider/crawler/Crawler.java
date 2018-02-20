@@ -4,14 +4,21 @@ import cn.edu.hfut.dmic.webcollector.model.CrawlDatums;
 import cn.edu.hfut.dmic.webcollector.model.Page;
 import cn.edu.hfut.dmic.webcollector.plugin.berkeley.BreadthCrawler;
 import cn.jrc.domain.PageInfo;
-import cn.jrc.util.Downloader;
+import cn.jrc.util.IndexUtils;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * @author Created By Jrc
  * @version v.0.1
  * @date 2018/2/18 22:48
  */
-public class Crawler extends BreadthCrawler{
+public class Crawler extends BreadthCrawler implements Handler{
 
     public Crawler(String crawlPath, boolean autoParse) {
         super(crawlPath, autoParse);
@@ -29,18 +36,46 @@ public class Crawler extends BreadthCrawler{
     public void visit(Page page, CrawlDatums next) {
         String url = page.url();
         if(page.matchUrl("http://ask.csdn.net/questions/.*")){
-            String title = page.select("dt").first().text();
-            String description = page.selectText("dd>p");
-            PageInfo pageInfo = new PageInfo();
-            pageInfo.setTitle(title);
-            System.out.println("title: "+title);
-            Downloader.download(page.content(),"./files/",url);
-
+            PageInfo pageInfo = handle(page.doc(), url);
+            index(pageInfo);
         }
     }
+
 
     public static void main(String[] args) throws Exception {
         Crawler crawler = new Crawler("db",true);
         crawler.start(4);
+    }
+
+    @Override
+    public PageInfo handle(Document document, String url) {
+        PageInfo  pageInfo = new PageInfo();
+        String title = document.getElementsByTag("title").get(0).text();
+        pageInfo.setTitle(title);
+        pageInfo.setUrl(url);
+        pageInfo.setQuestion(title);
+        Elements elements = document.select("div.tags > a");
+        ArrayList<String> tags = new ArrayList<>();
+        for (Element element : elements) {
+            tags.add(element.text());
+        }
+        ArrayList<String> answers = new ArrayList<>();
+        Elements elements1 = document.select("div.answer_list>div>div>p");
+        for (Element element : elements1) {
+            answers.add(element.text());
+        }
+        pageInfo.setDate(new Date());
+        String description = document.getElementsByTag("dd").get(0).text();
+        pageInfo.setDescription(description);
+        return pageInfo;
+    }
+
+    @Override
+    public void index(PageInfo pageInfo) {
+        try {
+            IndexUtils.index(pageInfo,"./indexDir");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
