@@ -31,11 +31,13 @@ public class PageTest {
         for (Element element : elements) {
             tags.add(element.text());
         }
+        pageInfo.setTags(tags);
         ArrayList<String> answers = new ArrayList<>();
         Elements elements1 = document.select("div.answer_list>div>div>p");
         for (Element element : elements1) {
             answers.add(element.text());
         }
+        pageInfo.setAnswers(answers);
         pageInfo.setDate(new Date());
         String description = document.getElementsByTag("dd").get(0).text();
         pageInfo.setDescription(description);

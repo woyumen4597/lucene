@@ -25,24 +25,25 @@ public class IndexUtils {
         Directory directory = FSDirectory.open(Paths.get(indexDir));
         IKAnalyzer analyzer = new IKAnalyzer();
         IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
-        iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+        iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
         IndexWriter writer = new IndexWriter(directory,iwc);
         Document document = addDocument(pageInfo);
         writer.addDocument(document);
         writer.commit();
+        writer.close();
     }
 
     private static Document addDocument(PageInfo pageInfo) {
         Document document  = new Document();
         document.add(new StringField("url",pageInfo.getUrl(), Field.Store.YES));
-        document.add(new StringField("title",pageInfo.getTitle(), Field.Store.YES));
-        document.add(new StringField("question",pageInfo.getQuestion(), Field.Store.YES));
+        document.add(new TextField("title",pageInfo.getTitle(), Field.Store.YES));
+        document.add(new TextField("question",pageInfo.getQuestion(), Field.Store.YES));
         String answers = GsonUtils.fromList2Json(pageInfo.getAnswers());
         document.add(new TextField("answers",answers, Field.Store.YES));
         String tags = GsonUtils.fromList2Json(pageInfo.getTags());
-        document.add(new StringField("tags",tags, Field.Store.YES));
+        document.add(new TextField("tags",tags, Field.Store.YES));
         document.add(new StringField("date",pageInfo.getDate().toString(), Field.Store.YES));
-        document.add(new StringField("description",pageInfo.getDescription(), Field.Store.YES));
+        document.add(new TextField("description",pageInfo.getDescription(), Field.Store.YES));
         return document;
     }
 

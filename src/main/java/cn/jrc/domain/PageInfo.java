@@ -76,4 +76,9 @@ public class PageInfo {
     public void setDate(Date date) {
         this.date = date;
     }
+
+    @Override
+    public String toString() {
+        return "PageInfo["+getUrl()+"]";
+    }
 }

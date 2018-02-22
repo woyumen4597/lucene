@@ -8,6 +8,8 @@ import cn.jrc.util.IndexUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import java.util.Date;
  * @date 2018/2/18 22:48
  */
 public class Crawler extends BreadthCrawler implements Handler{
+    public static final Logger LOG = LoggerFactory.getLogger(Crawler.class);
 
     public Crawler(String crawlPath, boolean autoParse) {
         super(crawlPath, autoParse);
@@ -59,11 +62,13 @@ public class Crawler extends BreadthCrawler implements Handler{
         for (Element element : elements) {
             tags.add(element.text());
         }
+        pageInfo.setTags(tags);
         ArrayList<String> answers = new ArrayList<>();
         Elements elements1 = document.select("div.answer_list>div>div>p");
         for (Element element : elements1) {
             answers.add(element.text());
         }
+        pageInfo.setAnswers(answers);
         pageInfo.setDate(new Date());
         String description = document.getElementsByTag("dd").get(0).text();
         pageInfo.setDescription(description);
@@ -73,7 +78,9 @@ public class Crawler extends BreadthCrawler implements Handler{
     @Override
     public void index(PageInfo pageInfo) {
         try {
+            LOG.info("Index Start: "+pageInfo.toString());
             IndexUtils.index(pageInfo,"./indexDir");
+            LOG.info("Index End: "+pageInfo.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }

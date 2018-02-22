@@ -34,14 +34,12 @@ public class IndexTest {
         IndexSearcher searcher = new IndexSearcher(reader);
         Analyzer analyzer = new IKAnalyzer();
         QueryParser parser = new QueryParser("title",analyzer);
-        Term term = new Term("title","链表");
+        Term term = new Term("title","代码");
         Query query = new FuzzyQuery(term);
         TopDocs topDocs = searcher.search(query, 10);
         for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
             Document doc = searcher.doc(scoreDoc.doc);
             System.out.println(doc.getField("title"));
         }
-
-
     }
 }
