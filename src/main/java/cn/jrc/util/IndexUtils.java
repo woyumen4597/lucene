@@ -1,7 +1,6 @@
 package cn.jrc.util;
 
 import cn.jrc.domain.PageInfo;
-import com.google.gson.Gson;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
@@ -37,7 +36,6 @@ public class IndexUtils {
         Document document  = new Document();
         document.add(new StringField("url",pageInfo.getUrl(), Field.Store.YES));
         document.add(new TextField("title",pageInfo.getTitle(), Field.Store.YES));
-        document.add(new TextField("question",pageInfo.getQuestion(), Field.Store.YES));
         String answers = GsonUtils.fromList2Json(pageInfo.getAnswers());
         document.add(new TextField("answers",answers, Field.Store.YES));
         String tags = GsonUtils.fromList2Json(pageInfo.getTags());

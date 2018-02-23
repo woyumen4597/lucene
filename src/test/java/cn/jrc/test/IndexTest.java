@@ -22,11 +22,6 @@ import java.nio.file.Paths;
  * @date 2018/2/20 19:35
  */
 public class IndexTest {
-    @Test
-    public void testIndex() throws IOException {
-        PageInfo pageInfo = PageTest.getPageInfo();
-        IndexUtils.index(pageInfo,"./indexDir");
-    }
 
     @Test
     public void testSearch() throws IOException {

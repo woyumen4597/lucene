@@ -12,19 +12,10 @@ import java.util.Date;
 public class PageInfo {
     private String url;
     private String title;
-    private String question;
     private ArrayList<String> answers;
     private ArrayList<String> tags;
     private Date date;
     private String description;
-
-    public String getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(String question) {
-        this.question = question;
-    }
 
     public ArrayList<String> getAnswers() {
         return answers;

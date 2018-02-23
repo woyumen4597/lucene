@@ -1,82 +1,67 @@
 package cn.jrc.spider.crawler;
 
+import cn.edu.hfut.dmic.webcollector.model.CrawlDatum;
 import cn.edu.hfut.dmic.webcollector.model.CrawlDatums;
 import cn.edu.hfut.dmic.webcollector.model.Page;
+import cn.edu.hfut.dmic.webcollector.net.HttpRequest;
+import cn.edu.hfut.dmic.webcollector.net.Proxys;
 import cn.edu.hfut.dmic.webcollector.plugin.berkeley.BreadthCrawler;
 import cn.jrc.domain.PageInfo;
 import cn.jrc.util.IndexUtils;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
+
 
 /**
  * @author Created By Jrc
  * @version v.0.1
  * @date 2018/2/18 22:48
  */
-public class Crawler extends BreadthCrawler implements Handler{
+public abstract class Crawler extends BreadthCrawler{
     public static final Logger LOG = LoggerFactory.getLogger(Crawler.class);
+
+    Proxys proxys = new Proxys();
+
 
     public Crawler(String crawlPath, boolean autoParse) {
         super(crawlPath, autoParse);
-        this.addSeed("http://ask.csdn.net/");
-        this.addRegex("http://ask.csdn.net/.*");
-        this.addRegex("-.*#.*");
-        this.addRegex("-.*\\?.*");
-        this.setThreads(50);
-        this.setResumable(true);
-        getConf().setExecuteInterval(1000);
+        proxys.addEmpty(); //add myself
+    }
 
+    @Override
+    public Page getResponse(CrawlDatum crawlDatum) throws Exception {
+        HttpRequest request = new HttpRequest(crawlDatum);
+        request.setProxy(proxys.nextRandom());
+        return request.responsePage();
     }
 
     @Override
     public void visit(Page page, CrawlDatums next) {
         String url = page.url();
-        if(page.matchUrl("http://ask.csdn.net/questions/.*")){
+        if (match(page, next)) {
             PageInfo pageInfo = handle(page.doc(), url);
             index(pageInfo);
         }
     }
 
+    /** 判断url是否符合要求
+     * @param page
+     * @param next
+     * @return
+     */
+    public abstract boolean match(Page page, CrawlDatums next);
 
-    public static void main(String[] args) throws Exception {
-        Crawler crawler = new Crawler("db",true);
-        crawler.start(4);
-    }
+    /** 处理页面返回PageInfo对象
+     * @param document
+     * @param url
+     * @return pageInfo
+     */
+    public abstract PageInfo handle(Document document, String url);
 
-    @Override
-    public PageInfo handle(Document document, String url) {
-        PageInfo  pageInfo = new PageInfo();
-        String title = document.getElementsByTag("title").get(0).text();
-        pageInfo.setTitle(title);
-        pageInfo.setUrl(url);
-        pageInfo.setQuestion(title);
-        Elements elements = document.select("div.tags > a");
-        ArrayList<String> tags = new ArrayList<>();
-        for (Element element : elements) {
-            tags.add(element.text());
-        }
-        pageInfo.setTags(tags);
-        ArrayList<String> answers = new ArrayList<>();
-        Elements elements1 = document.select("div.answer_list>div>div>p");
-        for (Element element : elements1) {
-            answers.add(element.text());
-        }
-        pageInfo.setAnswers(answers);
-        pageInfo.setDate(new Date());
-        String description = document.getElementsByTag("dd").get(0).text();
-        pageInfo.setDescription(description);
-        return pageInfo;
-    }
-
-    @Override
-    public void index(PageInfo pageInfo) {
+    private void index(PageInfo pageInfo){
         try {
             LOG.info("Index Start: "+pageInfo.toString());
             IndexUtils.index(pageInfo,"./indexDir");
