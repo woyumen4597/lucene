@@ -28,7 +28,7 @@ public abstract class Crawler extends BreadthCrawler{
 
     public Crawler(String crawlPath, boolean autoParse) {
         super(crawlPath, autoParse);
-        // proxys.addEmpty(); //add myself
+        proxys.addEmpty(); //add myself
         proxys.add("127.0.0.1",1080);
     }
 

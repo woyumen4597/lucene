@@ -23,9 +23,9 @@ public class SGFCrawler extends Crawler {
         this.addRegex("https://segmentfault.com/q/.*");
         this.addRegex("-.*#.*");
         this.addRegex("-.*\\?.*"); //不要匹配带有?的url
-        this.setThreads(50);
+        this.setThreads(5);
         this.setResumable(true);
-        this.getConf().setExecuteInterval(1000);
+        this.getConf().setExecuteInterval(2000);
     }
 
     @Override
