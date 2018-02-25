@@ -1,5 +1,6 @@
 package cn.jrc.test;
 
+import cn.edu.hfut.dmic.webcollector.model.Page;
 import cn.jrc.domain.PageInfo;
 import cn.jrc.util.Downloader;
 import org.jsoup.Jsoup;
@@ -12,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 /**
  * @author Created By Jrc
@@ -45,9 +47,9 @@ public class PageTest {
     }
 
     @Test
-    public void STO() throws IOException {
+    public void SGF() throws IOException {
         PageInfo pageInfo = new PageInfo();
-        Document document = Jsoup.parse(new File("./files/sto.html"), "utf-8");
+        Document document = Jsoup.parse(new File("./files/sgf.html"), "utf-8");
         String title = document.select("h1#questionTitle>a").text();
         pageInfo.setTitle(title);
         Elements elements = document.select("a.tag");
@@ -66,6 +68,37 @@ public class PageTest {
         }
         pageInfo.setAnswers(answers);
         pageInfo.setDate(new Date());
-        System.out.println(pageInfo);
+    }
+
+    @Test
+    public void STO() throws IOException {
+        PageInfo pageInfo = new PageInfo();
+        Document document = Jsoup.parse(new File("./files/sto.html"), "utf-8");
+        String title = document.select("div#question-header>h1>a.question-hyperlink").text();
+        pageInfo.setTitle(title);
+        String description = document.select("div.post-text").get(0).text();
+        pageInfo.setDescription(description);
+        Elements select = document.select("div.post-taglist>a");
+        ArrayList<String> tags = new ArrayList<>();
+        for (Element element : select) {
+            tags.add(element.text());
+        }
+        pageInfo.setTags(tags);
+        ArrayList<String> answers = new ArrayList<>();
+        Elements elements = document.select("td.answercell>div.post-text");
+        for (Element element : elements) {
+            answers.add(element.text());
+        }
+        pageInfo.setAnswers(answers);
+        pageInfo.setUrl(document.baseUri());
+        pageInfo.setDate(new Date());
+    }
+
+    @Test
+    public void testUrlMatch(){
+        String url = "https://stackoverflow.com/questions/14994391/thinking-in-angularjs-if-i-have-a-jquery-background";
+        String urlRegex = "https://stackoverflow.com/questions/[0-9]+.*";
+        boolean matches = Pattern.matches(urlRegex, url);
+        System.out.println(matches);
     }
 }

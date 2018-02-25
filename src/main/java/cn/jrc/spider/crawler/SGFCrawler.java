@@ -11,53 +11,54 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * StackOverflow Crawler
+ * SegmentFault Crawler
  * @author Created By Jrc
  * @version v.0.1
- * @date 2018/2/25 15:55
+ * @date 2018/2/23 16:37
  */
-public class STOCrawler extends Crawler{
-    public STOCrawler(String crawlPath, boolean autoParse) {
+public class SGFCrawler extends Crawler {
+    public SGFCrawler(String crawlPath, boolean autoParse) {
         super(crawlPath, autoParse);
-        this.addSeed("https://stackoverflow.com/questions/");
-        this.addRegex("https://stackoverflow.com/questions/[0-9]+.*");
+        this.addSeed("https://segmentfault.com/questions/");
+        this.addRegex("https://segmentfault.com/q/.*");
         this.addRegex("-.*#.*");
-        this.setThreads(5);
-        this.getConf().setExecuteInterval(2000);
+        this.addRegex("-.*\\?.*"); //不要匹配带有?的url
+        this.setThreads(50);
         this.setResumable(true);
+        this.getConf().setExecuteInterval(1000);
     }
 
     @Override
     public boolean match(Page page, CrawlDatums next) {
-        return page.matchUrl("https://stackoverflow.com/questions/[0-9]+.*");
+        return page.matchUrl("https://segmentfault.com/q/.*");
     }
 
     @Override
     public PageInfo handle(Document document, String url) {
         PageInfo pageInfo = new PageInfo();
-        String title = document.select("div#question-header>h1>a.question-hyperlink").text();
+        String title = document.select("h1#questionTitle>a").text();
         pageInfo.setTitle(title);
-        String description = document.select("div.post-text").get(0).text();
-        pageInfo.setDescription(description);
-        Elements select = document.select("div.post-taglist>a");
+        Elements elements = document.select("a.tag");
         ArrayList<String> tags = new ArrayList<>();
-        for (Element element : select) {
+        for (Element element : elements) {
             tags.add(element.text());
         }
         pageInfo.setTags(tags);
+        pageInfo.setUrl(url);
+        String description = document.select("div.question").text();
+        pageInfo.setDescription(description);
         ArrayList<String> answers = new ArrayList<>();
-        Elements elements = document.select("td.answercell>div.post-text");
-        for (Element element : elements) {
+        Elements elements1 = document.select("div.answer");
+        for (Element element : elements1) {
             answers.add(element.text());
         }
         pageInfo.setAnswers(answers);
-        pageInfo.setUrl(url);
         pageInfo.setDate(new Date());
         return pageInfo;
     }
 
     public static void main(String[] args) throws Exception {
-        Crawler crawler = new STOCrawler("db",true);
+        SGFCrawler crawler = new SGFCrawler("db",true);
         crawler.start(4);
     }
 }

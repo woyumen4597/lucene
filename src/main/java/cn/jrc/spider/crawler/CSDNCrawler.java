@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
+ * CSDN Crawler
  * @author Created By Jrc
  * @version v.0.1
  * @date 2018/2/23 16:05
@@ -22,9 +23,9 @@ public class CSDNCrawler extends Crawler {
         this.addRegex("http://ask.csdn.net/.*");
         this.addRegex("-.*#.*");
         this.addRegex("-.*\\?.*");
-        this.setThreads(50);
+        this.setThreads(5);
         this.setResumable(true);
-        getConf().setExecuteInterval(1000);
+        getConf().setExecuteInterval(2000);
     }
 
     @Override
