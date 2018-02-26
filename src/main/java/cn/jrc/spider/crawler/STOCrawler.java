@@ -20,9 +20,9 @@ public class STOCrawler extends Crawler{
     public STOCrawler(String crawlPath, boolean autoParse) {
         super(crawlPath, autoParse);
         this.addSeed("https://stackoverflow.com/questions/");
-        this.addRegex("https://stackoverflow.com/questions/[0-9]+.*");
+        this.addRegex("https://stackoverflow.com/questions.*");
         this.addRegex("-.*#.*");
-        this.setThreads(5);
+        this.setThreads(20);
         this.getConf().setExecuteInterval(2000);
         this.setResumable(true);
     }

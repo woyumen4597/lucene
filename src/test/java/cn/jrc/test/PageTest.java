@@ -96,8 +96,8 @@ public class PageTest {
 
     @Test
     public void testUrlMatch(){
-        String url = "https://stackoverflow.com/questions/14994391/thinking-in-angularjs-if-i-have-a-jquery-background";
-        String urlRegex = "https://stackoverflow.com/questions/[0-9]+.*";
+        String url = "https://stackoverflow.com/questions/14994391";
+        String urlRegex = "https://stackoverflow.com/questions/[0-9]*";
         boolean matches = Pattern.matches(urlRegex, url);
         System.out.println(matches);
     }

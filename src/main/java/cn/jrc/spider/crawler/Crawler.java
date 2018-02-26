@@ -20,7 +20,7 @@ import java.io.IOException;
  * @version v.0.1
  * @date 2018/2/18 22:48
  */
-public abstract class Crawler extends BreadthCrawler{
+public abstract class Crawler extends BreadthCrawler {
     public static final Logger LOG = LoggerFactory.getLogger(Crawler.class);
 
     Proxys proxys = new Proxys();
@@ -29,7 +29,7 @@ public abstract class Crawler extends BreadthCrawler{
     public Crawler(String crawlPath, boolean autoParse) {
         super(crawlPath, autoParse);
         proxys.addEmpty(); //add myself
-        proxys.add("127.0.0.1",1080);
+        proxys.add("127.0.0.1", 1080);
     }
 
     @Override
@@ -48,25 +48,29 @@ public abstract class Crawler extends BreadthCrawler{
         }
     }
 
-    /** 判断url是否符合要求
+    /**
+     * 判断url是否符合要求
+     *
      * @param page
      * @param next
      * @return
      */
     public abstract boolean match(Page page, CrawlDatums next);
 
-    /** 处理页面返回PageInfo对象
+    /**
+     * 处理页面返回PageInfo对象
+     *
      * @param document
      * @param url
      * @return pageInfo
      */
-    public abstract PageInfo handle(Document document, String url);
+    public abstract PageInfo handle(Document document, String url) throws NullPointerException;
 
-    private void index(PageInfo pageInfo){
+    private void index(PageInfo pageInfo) {
         try {
-            LOG.info("Index Start: "+pageInfo.toString());
-            IndexUtils.index(pageInfo,"./indexDir");
-            LOG.info("Index End: "+pageInfo.toString());
+            LOG.info("Index Start: " + pageInfo.toString());
+            IndexUtils.index(pageInfo, "./indexDir");
+            LOG.info("Index End: " + pageInfo.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }

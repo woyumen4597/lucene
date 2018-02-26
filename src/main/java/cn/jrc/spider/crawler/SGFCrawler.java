@@ -20,17 +20,18 @@ public class SGFCrawler extends Crawler {
     public SGFCrawler(String crawlPath, boolean autoParse) {
         super(crawlPath, autoParse);
         this.addSeed("https://segmentfault.com/questions/");
+        this.addSeed("https://segmentfault.com/questions/hottest");
         this.addRegex("https://segmentfault.com/q/.*");
-        this.addRegex("-.*#.*");
-        this.addRegex("-.*\\?.*"); //不要匹配带有?的url
-        this.setThreads(5);
+       // this.addRegex("-.*#.*");
+        // this.addRegex("-.*\\?.*"); //不要匹配带有?的url
+        this.setThreads(20);
         this.setResumable(true);
         this.getConf().setExecuteInterval(2000);
     }
 
     @Override
     public boolean match(Page page, CrawlDatums next) {
-        return page.matchUrl("https://segmentfault.com/q/.*");
+        return page.matchUrl("https://segmentfault.com/q/[0-9]*");
     }
 
     @Override
