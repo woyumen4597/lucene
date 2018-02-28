@@ -1,8 +1,6 @@
 package cn.jrc.lucene.analyzer;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.util.IOUtils;
 
 import java.io.Closeable;

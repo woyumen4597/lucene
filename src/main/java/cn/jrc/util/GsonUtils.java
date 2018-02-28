@@ -1,6 +1,7 @@
 package cn.jrc.util;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 
 /**
@@ -9,7 +10,7 @@ import com.google.gson.Gson;
  * @date 2018/2/20 19:20
  */
 public class GsonUtils {
-    public static Gson gson = new Gson();
+    public static Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
     public static String fromList2Json(Iterable list) {
         return gson.toJson(list);

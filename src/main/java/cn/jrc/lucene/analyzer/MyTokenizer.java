@@ -3,7 +3,8 @@ package cn.jrc.lucene.analyzer;
 import org.apache.lucene.analysis.Tokenizer;
 
 import java.io.IOException;
-import java.io.StringReader; /**
+import java.io.StringReader;
+/**
  * @author Created By Jrc
  * @version v.0.1
  * @date 2018/1/28 16:33

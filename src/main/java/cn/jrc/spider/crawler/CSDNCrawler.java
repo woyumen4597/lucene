@@ -32,7 +32,7 @@ public class CSDNCrawler extends Crawler {
 
     @Override
     public boolean match(Page page, CrawlDatums next) {
-        return page.matchUrl("http://ask.csdn.net/questions/[0-9]+*");
+        return page.matchUrl("http://ask.csdn.net/questions/[0-9]+.*");
     }
 
 

@@ -1,4 +1,4 @@
-package cn.jrc.lucene.analyzer;
+package cn.jrc.test;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
