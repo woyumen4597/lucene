@@ -1,5 +1,7 @@
 package cn.jrc.test;
 
+import cn.jrc.lucene.search.TermInfo;
+import cn.jrc.util.TermUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
@@ -32,6 +34,15 @@ public class IndexTest {
         for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
             Document doc = searcher.doc(scoreDoc.doc);
             System.out.println(doc.getField("title"));
+        }
+    }
+
+    @Test
+    public void testTopFreq() throws IOException {
+        IndexReader reader = DirectoryReader.open(FSDirectory.open(Paths.get("./indexDir")));
+        TermInfo[] termInfos = TermUtils.getHighFreqTerms(reader, 10, "description");
+        for (TermInfo termInfo : termInfos) {
+            System.out.println("term: "+termInfo.term+" freq: "+termInfo.docFreq);
         }
     }
 }

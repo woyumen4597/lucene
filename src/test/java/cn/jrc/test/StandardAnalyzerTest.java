@@ -2,10 +2,7 @@ package cn.jrc.test;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
-import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
-import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
+import org.apache.lucene.analysis.tokenattributes.*;
 import org.apache.lucene.search.highlight.*;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 
@@ -25,6 +22,7 @@ public class StandardAnalyzerTest {
         OffsetAttribute offsetAttribute = tokenStream.addAttribute(OffsetAttribute.class);
         PositionIncrementAttribute positionIncrementAttribute = tokenStream.addAttribute(PositionIncrementAttribute.class);
         TypeAttribute typeAttribute = tokenStream.addAttribute(TypeAttribute.class);
+        TermFrequencyAttribute termFrequencyAttribute = tokenStream.addAttribute(TermFrequencyAttribute.class);
         tokenStream.reset();
         int position = 0;
         while(tokenStream.incrementToken()){
@@ -40,6 +38,7 @@ public class StandardAnalyzerTest {
             }
             System.out.println("第"+position+"个分词");
             System.out.println("类型:"+typeAttribute.type());
+            System.out.println("频率: "+termFrequencyAttribute.getTermFrequency());
             System.out.println("------------");
         }
         tokenStream.close();
