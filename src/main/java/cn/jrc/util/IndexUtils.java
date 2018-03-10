@@ -1,10 +1,8 @@
 package cn.jrc.util;
 
 import cn.jrc.domain.PageInfo;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
+import org.apache.lucene.document.*;
+import org.apache.lucene.index.IndexOptions;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
@@ -45,6 +43,10 @@ public class IndexUtils {
 
     private static Document addDocument(PageInfo pageInfo) {
         Document document = new Document();
+        FieldType type = new FieldType();
+        type.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS);
+        type.setStored(true);
+        type.setStoreTermVectors(true);
         document.add(new StringField("url", pageInfo.getUrl(), Field.Store.YES));
         document.add(new TextField("title", pageInfo.getTitle(), Field.Store.YES));
         String answers = GsonUtils.fromList2Json(pageInfo.getAnswers());

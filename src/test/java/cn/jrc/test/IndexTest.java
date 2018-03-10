@@ -1,11 +1,8 @@
 package cn.jrc.test;
 
-import cn.jrc.lucene.search.TermInfo;
-import cn.jrc.util.TermUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.*;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
@@ -38,11 +35,22 @@ public class IndexTest {
     }
 
     @Test
-    public void testTopFreq() throws IOException {
+    public void testIndexReader() throws IOException {
         IndexReader reader = DirectoryReader.open(FSDirectory.open(Paths.get("./indexDir")));
-        TermInfo[] termInfos = TermUtils.getHighFreqTerms(reader, 10, "description");
-        for (TermInfo termInfo : termInfos) {
-            System.out.println("term: "+termInfo.term+" freq: "+termInfo.docFreq);
+        //sum of docs
+        System.out.println(reader.numDocs());
+        //returns the number of documents that have at least one term for this field
+        System.out.println(reader.getDocCount("answers"));
+        //测试某个词在某字段中的频率
+        System.out.println(reader.docFreq(new Term("tags", "javascript")));
+        System.out.println(reader.maxDoc());
+        Terms terms = reader.getTermVector(0, "description"); //矢量计算用来计算相似文档时使用
+        System.out.println(reader.getSumDocFreq("answers"));
+        //测试某个词在某字段中的频率
+        System.out.println(reader.totalTermFreq(new Term("tags", "javascript")));
+        Document document = reader.document(1);
+        for (IndexableField field : document.getFields()) {
+            System.out.println("name: "+field.name()+" type: "+field.fieldType()+" value: "+field.stringValue());
         }
     }
 }
