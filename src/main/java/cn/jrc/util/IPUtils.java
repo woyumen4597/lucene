@@ -3,10 +3,12 @@ package cn.jrc.util;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Created By Jrc
@@ -35,6 +37,18 @@ public class IPUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static Collection<String> getIpsFromTxt(String filePath) throws IOException {
+        List<String> ips = new ArrayList<>();
+        File file = new File(filePath);
+        FileReader reader = new FileReader(file);
+        BufferedReader br = new BufferedReader(reader);
+        String line = null;
+        while((line=br.readLine())!=null){
+            ips.add(line);
+        }
+        return ips;
     }
 
 }

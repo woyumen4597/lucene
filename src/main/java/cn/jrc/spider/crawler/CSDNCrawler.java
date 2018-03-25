@@ -24,10 +24,10 @@ public class CSDNCrawler extends Crawler {
         this.addSeed("http://ask.csdn.net/questions?type=resolved");
         this.addRegex("http://ask.csdn.net/.*");
         this.addRegex("-.*#.*");
-       // this.addRegex("-.*\\?.*");
+        // this.addRegex("-.*\\?.*");
         this.setThreads(20);
         this.setResumable(true);
-        getConf().setExecuteInterval(2000);
+//        getConf().setExecuteInterval(2000);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class CSDNCrawler extends Crawler {
 
 
     @Override
-    public PageInfo handle(Document document, String url){
+    public PageInfo handle(Document document, String url) {
         PageInfo pageInfo = new PageInfo();
         String title = document.getElementsByTag("title").get(0).text();
         pageInfo.setTitle(title);

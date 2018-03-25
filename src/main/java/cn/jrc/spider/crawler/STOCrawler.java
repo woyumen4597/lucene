@@ -24,7 +24,7 @@ public class STOCrawler extends Crawler{
         this.addRegex("-.*#.*");
         this.setThreads(20);
         this.getConf().setExecuteInterval(2000);
-        this.setResumable(true);
+        this.setResumable(false);
     }
 
     @Override

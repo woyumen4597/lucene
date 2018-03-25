@@ -7,11 +7,13 @@ import cn.edu.hfut.dmic.webcollector.net.HttpRequest;
 import cn.edu.hfut.dmic.webcollector.net.Proxys;
 import cn.edu.hfut.dmic.webcollector.plugin.berkeley.BreadthCrawler;
 import cn.jrc.domain.PageInfo;
+import cn.jrc.util.IPUtils;
 import cn.jrc.util.IndexUtils;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 
 
@@ -28,8 +30,12 @@ public abstract class Crawler extends BreadthCrawler {
 
     public Crawler(String crawlPath, boolean autoParse) {
         super(crawlPath, autoParse);
+//        try {
+//            proxys.addAllFromFile(new File("./files/ip.txt"));
+//        } catch (Exception e){
+//            e.printStackTrace();
+//        }
         proxys.addEmpty(); //add myself
-        proxys.add("127.0.0.1", 1080);
     }
 
     @Override
