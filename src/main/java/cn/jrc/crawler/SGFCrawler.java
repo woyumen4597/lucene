@@ -1,37 +1,33 @@
-package cn.jrc.spider.crawler;
+package cn.jrc.crawler;
 
-import cn.edu.hfut.dmic.webcollector.model.CrawlDatums;
-import cn.edu.hfut.dmic.webcollector.model.Page;
 import cn.jrc.domain.PageInfo;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 /**
  * SegmentFault Crawler
+ *
  * @author Created By Jrc
  * @version v.0.1
  * @date 2018/2/23 16:37
  */
 public class SGFCrawler extends Crawler {
-    public SGFCrawler(String crawlPath, boolean autoParse) {
-        super(crawlPath, autoParse);
-        this.addSeed("https://segmentfault.com/questions/");
-        this.addSeed("https://segmentfault.com/questions/hottest");
-        this.addRegex("https://segmentfault.com/q/.*");
-       // this.addRegex("-.*#.*");
-        // this.addRegex("-.*\\?.*"); //不要匹配带有?的url
-        this.setThreads(20);
-        this.setResumable(true);
-        this.getConf().setExecuteInterval(2000);
+
+
+    public SGFCrawler(String url) throws IOException {
+        super(url);
     }
 
+
     @Override
-    public boolean match(Page page, CrawlDatums next) {
-        return page.matchUrl("https://segmentfault.com/q/[0-9]*");
+    public boolean match(String link) {
+        return Pattern.matches("https://segmentfault.com/q/[0-9]*",link);
     }
 
     @Override
@@ -58,8 +54,4 @@ public class SGFCrawler extends Crawler {
         return pageInfo;
     }
 
-    public static void main(String[] args) throws Exception {
-        SGFCrawler crawler = new SGFCrawler("db",true);
-        crawler.start(4);
-    }
 }

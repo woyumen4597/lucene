@@ -1,14 +1,16 @@
-package cn.jrc.spider.crawler;
+package cn.jrc.crawler;
 
-import cn.edu.hfut.dmic.webcollector.model.CrawlDatums;
 import cn.edu.hfut.dmic.webcollector.model.Page;
 import cn.jrc.domain.PageInfo;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * CSDN Crawler
@@ -18,21 +20,15 @@ import java.util.Date;
  * @date 2018/2/23 16:05
  */
 public class CSDNCrawler extends Crawler {
-    public CSDNCrawler(String crawlPath, boolean autoParse) {
-        super(crawlPath, autoParse);
-        this.addSeed("http://ask.csdn.net/");
-        this.addSeed("http://ask.csdn.net/questions?type=resolved");
-        this.addRegex("http://ask.csdn.net/.*");
-        this.addRegex("-.*#.*");
-        // this.addRegex("-.*\\?.*");
-        this.setThreads(20);
-        this.setResumable(true);
-//        getConf().setExecuteInterval(2000);
+
+    public CSDNCrawler(String url) throws IOException {
+        super(url);
     }
 
+
     @Override
-    public boolean match(Page page, CrawlDatums next) {
-        return page.matchUrl("http://ask.csdn.net/questions/[0-9]+.*");
+    public boolean match(String link) {
+        return Pattern.matches("https://ask.csdn.net/questions/[0-9]+", link);
     }
 
 
@@ -60,8 +56,4 @@ public class CSDNCrawler extends Crawler {
         return pageInfo;
     }
 
-    public static void main(String[] args) throws Exception {
-        Crawler crawler = new CSDNCrawler("db", true);
-        crawler.start(4);
-    }
 }

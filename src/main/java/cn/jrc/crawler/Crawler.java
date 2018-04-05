@@ -30,11 +30,6 @@ public abstract class Crawler extends BreadthCrawler {
 
     public Crawler(String crawlPath, boolean autoParse) {
         super(crawlPath, autoParse);
-//        try {
-//            proxys.addAllFromFile(new File("./files/ip.txt"));
-//        } catch (Exception e){
-//            e.printStackTrace();
-//        }
         proxys.addEmpty(); //add myself
     }
 

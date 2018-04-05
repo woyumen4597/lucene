@@ -1,35 +1,33 @@
-package cn.jrc.spider.crawler;
+package cn.jrc.crawler;
 
-import cn.edu.hfut.dmic.webcollector.model.CrawlDatums;
-import cn.edu.hfut.dmic.webcollector.model.Page;
 import cn.jrc.domain.PageInfo;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 /**
  * StackOverflow Crawler
+ *
  * @author Created By Jrc
  * @version v.0.1
  * @date 2018/2/25 15:55
  */
-public class STOCrawler extends Crawler{
-    public STOCrawler(String crawlPath, boolean autoParse) {
-        super(crawlPath, autoParse);
-        this.addSeed("https://stackoverflow.com/questions/");
-        this.addRegex("https://stackoverflow.com/questions.*");
-        this.addRegex("-.*#.*");
-        this.setThreads(20);
-        this.getConf().setExecuteInterval(2000);
-        this.setResumable(false);
+public class STOCrawler extends Crawler {
+
+
+    public STOCrawler(String url) throws IOException {
+        super(url);
     }
 
+
     @Override
-    public boolean match(Page page, CrawlDatums next) {
-        return page.matchUrl("https://stackoverflow.com/questions/[0-9]+.*");
+    public boolean match(String link) {
+        return Pattern.matches("https://stackoverflow.com/questions/[0-9]+.*", link);
     }
 
     @Override
@@ -56,8 +54,4 @@ public class STOCrawler extends Crawler{
         return pageInfo;
     }
 
-    public static void main(String[] args) throws Exception {
-        Crawler crawler = new STOCrawler("db",true);
-        crawler.start(4);
-    }
 }

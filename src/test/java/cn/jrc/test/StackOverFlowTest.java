@@ -1,6 +1,5 @@
 package cn.jrc.test;
 
-import cn.jrc.spider.LinkQueue;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
