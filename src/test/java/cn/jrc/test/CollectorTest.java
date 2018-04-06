@@ -24,8 +24,7 @@ public class CollectorTest {
     @Test
     public void taskdao(){
         TaskDao dao = new TaskDao();
-        Task task = new Task("http://www.baidu.com",0);
-        dao.insert(task);
+        dao.insert(new Task("https://ask.csdn.net/questions/684695", 1));
     }
 
     @Test

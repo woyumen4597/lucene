@@ -4,7 +4,6 @@ import cn.jrc.domain.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +57,31 @@ public class TaskDao extends BaseDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close(connection, psmt, resultSet);
         }
         return urls;
+    }
+
+
+    public boolean exists(String url) {
+        connection = getConnection();
+        String sql = "SELECT count(*) FROM task WHERE url=?";
+        try {
+            psmt = connection.prepareStatement(sql);
+            psmt.setString(1, url);
+            resultSet = psmt.executeQuery();
+            while (resultSet.next()) {
+                int count = resultSet.getInt("count(*)");
+                if (count != 0) {
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(connection, psmt, resultSet);
+        }
+        return false;
     }
 }
