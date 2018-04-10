@@ -57,6 +57,7 @@ public class ExtractAndIndexTask implements Runnable {
             }
         } finally {
             endGate.countDown();
+            LOG.info("Remaining: " + endGate.getCount());
         }
     }
 }

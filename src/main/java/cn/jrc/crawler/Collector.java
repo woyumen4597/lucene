@@ -1,15 +1,13 @@
 package cn.jrc.crawler;
 
 import cn.jrc.dao.TaskDao;
-import cn.jrc.domain.Task;
+import cn.jrc.task.DeriveTask;
 import cn.jrc.task.ExtractAndIndexTask;
 import cn.jrc.util.CollectorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -22,10 +20,10 @@ import java.util.concurrent.LinkedBlockingDeque;
  */
 public class Collector {
     public static Logger LOG = LoggerFactory.getLogger(Collector.class);
-    private static int MAX_NUM = 100;
+    public static int MAX_NUM = 5000;
     private static LinkedBlockingDeque<String> urlQueue = new LinkedBlockingDeque<>(MAX_NUM);
     private static ExecutorService executorService = Executors.newCachedThreadPool();
-    private static boolean DONE = false;
+    public static boolean DONE = false;
     private List<String> seeds;
     private TaskDao dao = new TaskDao();
 
@@ -62,36 +60,7 @@ public class Collector {
     }
 
     private void deriveLink(String seed) {
-        Crawler crawler = null;
-        try {
-            if (seed.startsWith("https://ask.csdn.net/")) {
-                crawler = new CSDNCrawler(seed);
-            } else if (seed.startsWith("https://segmentfault.com/questions/")) {
-                crawler = new SGFCrawler(seed);
-            } else if (seed.startsWith("https://stackoverflow.com/questions/")) {
-                crawler = new STOCrawler(seed);
-            }
-        } catch (IOException e) {
-            dao.update(seed, Task.FAILED);
-            e.printStackTrace();
-        }
-        if (crawler != null) {
-            Set<String> deriveLinks = crawler.deriveLinks();
-            for (String link : deriveLinks) {
-                if (urlQueue.size() < MAX_NUM && !urlQueue.isEmpty()) {
-                    try {
-                        if (!urlQueue.contains(link) && dao.insert(new Task(link, Task.READY))) {
-                            urlQueue.put(link);
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    DONE = true;
-                }
-            }
-        }
-
+        executorService.submit(new DeriveTask(seed, urlQueue));
     }
 
     private void extractAndIndex() {
