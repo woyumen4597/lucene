@@ -40,7 +40,7 @@ public abstract class Crawler {
         HTTP_CLIENT_BUILDER = HttpClientBuilder.create();
         HTTP_CLIENT_BUILDER.setConnectionTimeToLive(5, TimeUnit.SECONDS);
         try {
-            HTTP_CLIENT_BUILDER.setSSLContext(SSLContexts.custom().useProtocol("TLSv1").build());
+            HTTP_CLIENT_BUILDER.setSSLContext(SSLContexts.custom().build());
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (KeyManagementException e) {
@@ -52,7 +52,7 @@ public abstract class Crawler {
     protected String url;
     protected Document document = null;
 
-    public Crawler(String url) {
+    public Crawler(String url) throws IOException {
         this.url = url;
         HttpGet get = new HttpGet(url);
         get.addHeader("User-Agent", USERAGENT);
@@ -66,12 +66,11 @@ public abstract class Crawler {
                 document = Jsoup.parse(html, url);
             } else {
                 LOG.error(url + " return code: " + code);
+                throw new IOException("Net Error,code = " + code);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
+        } finally {
             try {
-                if(response!=null) {
+                if (response != null) {
                     response.close();
                 }
             } catch (IOException e) {
@@ -92,12 +91,14 @@ public abstract class Crawler {
     }
 
     public Set<String> deriveLinks() {
-        Elements links = document.getElementsByTag("a");
         Set<String> set = new HashSet<>();
-        for (Element link : links) {
-            String url = link.absUrl("href");
-            if (match(url)) {
-                set.add(url);
+        Elements links = document.getElementsByTag("a");
+        if (links != null) {
+            for (Element link : links) {
+                String url = link.absUrl("href");
+                if (match(url)) {
+                    set.add(url);
+                }
             }
         }
         return set;

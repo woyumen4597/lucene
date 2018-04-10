@@ -14,7 +14,7 @@ import java.util.List;
 public class TaskDao extends BaseDao {
     public static Logger LOGGER = LoggerFactory.getLogger(TaskDao.class);
 
-    public void insert(Task task) {
+    public boolean insert(Task task) {
         connection = getConnection();
         String sql = "INSERT INTO task(url,state) VALUES(?,?)";
         try {
@@ -22,8 +22,10 @@ public class TaskDao extends BaseDao {
             psmt.setString(1, task.getUrl());
             psmt.setInt(2, task.getState());
             psmt.execute();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         } finally {
             close(connection, psmt, resultSet);
         }

@@ -7,9 +7,7 @@ import cn.jrc.util.CollectorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.validation.constraints.Null;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -24,9 +22,8 @@ import java.util.concurrent.LinkedBlockingDeque;
  */
 public class Collector {
     public static Logger LOG = LoggerFactory.getLogger(Collector.class);
-    private static int MAX_NUM = 50;
+    private static int MAX_NUM = 100;
     private static LinkedBlockingDeque<String> urlQueue = new LinkedBlockingDeque<>(MAX_NUM);
-    private static HashSet<String> urlSet = new HashSet<>();
     private static ExecutorService executorService = Executors.newCachedThreadPool();
     private static boolean DONE = false;
     private List<String> seeds;
@@ -83,8 +80,9 @@ public class Collector {
             for (String link : deriveLinks) {
                 if (urlQueue.size() < MAX_NUM && !urlQueue.isEmpty()) {
                     try {
-                        urlQueue.put(link);
-                        dao.insert(new Task(link, Task.READY));
+                        if (!urlQueue.contains(link) && dao.insert(new Task(link, Task.READY))) {
+                            urlQueue.put(link);
+                        }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
