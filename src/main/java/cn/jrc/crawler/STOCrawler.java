@@ -44,7 +44,7 @@ public class STOCrawler extends Crawler {
         }
         pageInfo.setTags(tags);
         ArrayList<String> answers = new ArrayList<>();
-        Elements elements = document.select("td.answercell>div.post-text");
+        Elements elements = document.select("div.answercell>div.post-text");
         for (Element element : elements) {
             answers.add(element.text());
         }

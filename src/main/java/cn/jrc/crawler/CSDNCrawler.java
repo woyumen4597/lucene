@@ -1,6 +1,5 @@
 package cn.jrc.crawler;
 
-import cn.edu.hfut.dmic.webcollector.model.Page;
 import cn.jrc.domain.PageInfo;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -9,7 +8,6 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.regex.Pattern;
 
 /**

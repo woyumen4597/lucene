@@ -1,5 +1,7 @@
 package cn.jrc.test;
 
+import cn.jrc.crawler.Crawler;
+import cn.jrc.crawler.STOCrawler;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -144,5 +146,14 @@ public class IndexTest {
         //多个add之间认为是OR操作，即(has lots)和bridges之间的slop不大于3，不计算标点
         MultiPhraseQuery multiPhraseQuery = new MultiPhraseQuery.Builder().add(terms).add(term2).setSlop(3).build();
         search(multiPhraseQuery);
+    }
+
+
+    @Test
+    public void updateIndex() throws IOException {
+        String url = "https://stackoverflow.com/questions/987142/make-gitignore-ignore-everything-except-a-few-files";
+        Crawler crawler = new STOCrawler(url);
+        crawler.visit();
+
     }
 }

@@ -33,6 +33,7 @@ public abstract class Crawler {
     public static final Logger LOG = LoggerFactory.getLogger(Crawler.class);
     private static final HttpClientBuilder HTTP_CLIENT_BUILDER;
     private static final CloseableHttpClient CLIENT;
+    private static String indexDir = "./indexDir";
     private static final String USERAGENT = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; QQDownload 1.7; .NET CLR 1.1.4322; CIBA; .NET CLR 2.0.50727)";
 
     static {
@@ -123,7 +124,8 @@ public abstract class Crawler {
     private void index(PageInfo pageInfo) {
         try {
             LOG.info("Index Start: " + pageInfo.toString());
-            IndexUtils.index(pageInfo, "./indexDir");
+            //IndexUtils.index(pageInfo, indexDir);
+            IndexUtils.update(pageInfo,indexDir);
             LOG.info("Index End: " + pageInfo.toString());
         } catch (IOException e) {
             e.printStackTrace();
