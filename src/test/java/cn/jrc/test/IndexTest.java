@@ -2,6 +2,7 @@ package cn.jrc.test;
 
 import cn.jrc.crawler.Crawler;
 import cn.jrc.crawler.STOCrawler;
+import cn.jrc.util.IndexUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -151,9 +152,14 @@ public class IndexTest {
 
     @Test
     public void updateIndex() throws IOException {
-        String url = "https://stackoverflow.com/questions/987142/make-gitignore-ignore-everything-except-a-few-files";
+        String url = "https://stackoverflow.com/questions/950087/how-do-i-include-a-javascript-file-in-another-javascript-file?page=2&tab=votes#tab-top";
         Crawler crawler = new STOCrawler(url);
         crawler.visit();
+    }
 
+    @Test
+    public void deleteTerm() throws IOException {
+        Term term = new Term("url","https://stackoverflow.com/questions/950087/how-do-i-include-a-javascript-file-in-another-javascript-file?page=2&tab=votes#tab-top");
+        IndexUtils.delete(term);
     }
 }

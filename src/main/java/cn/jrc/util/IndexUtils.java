@@ -70,29 +70,12 @@ public class IndexUtils {
         IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
         iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
         IndexWriter writer;
-        IndexSearcher searcher = getIndexSearcher();
         try {
             writer = new IndexWriter(directory, iwc);
             Term term = new Term("url", pageInfo.getUrl());
-            TermQuery query = new TermQuery(term);
-            TopDocs topDocs = searcher.search(query, 10);
-            if (topDocs.scoreDocs.length == 0) {
-                throw new IllegalArgumentException("No Match Result In IndexDir");
-            } else if (topDocs.scoreDocs.length > 1) {
-                throw new IllegalArgumentException("Given Term matches more than 1 document in the index");
-            } else {
-                int docId = topDocs.scoreDocs[0].doc;
-                //find old doc
-                Document doc = searcher.doc(docId);
-                ArrayList<String> answerList = pageInfo.getAnswers();
-                if (!answerList.isEmpty()) {
-                    doc.removeField("answers");
-                    String answers = GsonUtils.fromList2Json(pageInfo.getAnswers());
-                    doc.add(new TextField("answers", answers, Field.Store.YES));
-                }
-                writer.updateDocument(term, doc);
-                // TODO: 2018/4/21 Remains Bug to Fix 
-            }
+            Document document = addDocument(pageInfo);
+            writer.updateDocument(term, document);
+            // TODO: 2018/4/21 Remains Bug to Fix
             writer.commit();
             writer.close();
         } catch (LockObtainFailedException e) {
@@ -100,5 +83,15 @@ public class IndexUtils {
         }
     }
 
-
+    public static void delete(Term term) throws IOException {
+        Directory directory = FSDirectory.open(Paths.get(indexDir));
+        IKAnalyzer analyzer = new IKAnalyzer();
+        IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
+        iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+        IndexWriter writer;
+        writer = new IndexWriter(directory, iwc);
+        writer.deleteDocuments(term);
+        writer.commit();
+        writer.close();
+    }
 }
