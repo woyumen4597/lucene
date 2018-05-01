@@ -163,16 +163,17 @@ public class IndexTest {
     @Test
     public void updateIndex() throws IOException {
         TaskDao dao = new TaskDao();
-        List<String> urls  = new ArrayList<>();
+        List<String> urls = new ArrayList<>();
         urls.add("https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript");
 //        List<String> urls = dao.getUrlsByState(1);
         Collector collector = new Collector();
-        collector.extractAndIndex(urls,true);
+        collector.extractAndIndex(urls, true);
     }
 
     @Test
     public void deleteTerm() throws IOException {
-        Term term = new Term("url","https://stackoverflow.com/questions/950087/how-do-i-include-a-javascript-file-in-another-javascript-file?lastactivity");
+        Term term = new Term("url", "https://stackoverflow.com/questions/950087/how-do-i-include-a-javascript-file-in-another-javascript-file?lastactivity");
         IndexUtils.delete(term);
     }
+
 }
