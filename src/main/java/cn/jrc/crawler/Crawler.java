@@ -80,11 +80,11 @@ public abstract class Crawler {
         }
     }
 
-    public void visit() throws IOException {
+    public void visit(boolean update) throws IOException {
         if (document != null) {
             if (match(url)) {
                 PageInfo pageInfo = handle(document, url);
-                index(pageInfo);
+                index(pageInfo,update);
             }
         } else {
             throw new IOException("Crawl Failed!Document is null!");
@@ -121,11 +121,14 @@ public abstract class Crawler {
      */
     public abstract PageInfo handle(Document document, String url) throws NullPointerException;
 
-    private void index(PageInfo pageInfo) {
+    private void index(PageInfo pageInfo, boolean update) {
         try {
             LOG.info("Index Start: " + pageInfo.toString());
-            //IndexUtils.index(pageInfo, indexDir);
-            IndexUtils.update(pageInfo,indexDir);
+            if (update) {
+                IndexUtils.update(pageInfo, indexDir);
+            } else {
+                IndexUtils.index(pageInfo, indexDir);
+            }
             LOG.info("Index End: " + pageInfo.toString());
         } catch (IOException e) {
             e.printStackTrace();

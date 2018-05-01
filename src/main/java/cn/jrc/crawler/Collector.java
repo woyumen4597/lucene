@@ -40,7 +40,7 @@ public class Collector {
             throw new NullPointerException("seeds is null");
         }
         deriveLinks();
-        extractAndIndex();
+        extractAndIndex(false);
     }
 
 
@@ -63,13 +63,13 @@ public class Collector {
         executorService.submit(new DeriveTask(seed, urlQueue));
     }
 
-    private void extractAndIndex() {
+    private void extractAndIndex(boolean update) {
         CountDownLatch endGate = new CountDownLatch(urlQueue.size());
         LOG.info("Count: " + urlQueue.size());
         while (!urlQueue.isEmpty()) {
             try {
                 String url = urlQueue.take();
-                executorService.submit(new ExtractAndIndexTask(url, endGate));
+                executorService.submit(new ExtractAndIndexTask(url, endGate,update));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -83,9 +83,9 @@ public class Collector {
         System.out.println("结束");
     }
 
-    public void extractAndIndex(List<String> urls) {
+    public void extractAndIndex(List<String> urls,boolean update) {
         CollectorUtils.convertListToQueue(urls, urlQueue);
-        extractAndIndex();
+        extractAndIndex(update);
     }
 
     public List<String> getSeeds() {

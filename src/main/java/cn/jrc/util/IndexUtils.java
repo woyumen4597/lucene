@@ -73,11 +73,12 @@ public class IndexUtils {
         try {
             writer = new IndexWriter(directory, iwc);
             Term term = new Term("url", pageInfo.getUrl());
-            Document document = addDocument(pageInfo);
-            writer.updateDocument(term, document);
-            // TODO: 2018/4/21 Remains Bug to Fix
-            writer.commit();
-            writer.close();
+            if (!pageInfo.getAnswers().isEmpty()) {
+                Document document = addDocument(pageInfo);
+                writer.updateDocument(term, document);
+                writer.commit();
+                writer.close();
+            }
         } catch (LockObtainFailedException e) {
             // do nothing this is common exception
         }

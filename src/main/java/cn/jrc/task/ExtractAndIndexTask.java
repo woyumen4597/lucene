@@ -23,10 +23,12 @@ public class ExtractAndIndexTask implements Runnable {
     private CountDownLatch endGate;
     private Crawler crawler = null;
     private TaskDao dao = new TaskDao();
+    private boolean update;
 
-    public ExtractAndIndexTask(String url, CountDownLatch endGate) {
+    public ExtractAndIndexTask(String url, CountDownLatch endGate,boolean update) {
         this.url = url;
         this.endGate = endGate;
+        this.update = update;
         try {
             if (url.startsWith("https://ask.csdn.net/")) {
                 crawler = new CSDNCrawler(url);
@@ -47,7 +49,7 @@ public class ExtractAndIndexTask implements Runnable {
             if (crawler != null) {
                 LOG.info("Start Extract Url: " + url);
                 try {
-                    crawler.visit();
+                    crawler.visit(update);
                     dao.update(url, Task.EXTRACTED);
                     LOG.info("End Extract Url: " + url);
                 } catch (IOException e) {

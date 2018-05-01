@@ -24,7 +24,7 @@ public class CollectorTest {
     @Test
     public void taskdao(){
         TaskDao dao = new TaskDao();
-        dao.insert(new Task("https://ask.csdn.net/questions/684695", 1));
+        dao.update("https://stackoverflow.com/questions/950087/how-do-i-include-a-javascript-file-in-another-javascript-file?answertab=oldest#tab-top",1);
     }
 
     @Test
@@ -32,6 +32,6 @@ public class CollectorTest {
         TaskDao dao = new TaskDao();
         List<String> urls = dao.getUrlsByState(0);
         Collector collector = new Collector();
-        collector.extractAndIndex(urls);
+        collector.extractAndIndex(urls,true);
     }
 }
