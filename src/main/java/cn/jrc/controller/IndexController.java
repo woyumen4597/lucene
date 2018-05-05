@@ -1,8 +1,9 @@
 package cn.jrc.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author Created By Jrc
@@ -11,8 +12,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 public class IndexController {
+
     @RequestMapping("/")
-    public String index() {
+    public String ss(ModelMap modelMap) {
+        modelMap.addAttribute("message","ssss");
         return "index";
+    }
+
+    @RequestMapping("/query")
+    public String query(@RequestParam String q,ModelMap modelMap){
+        System.out.println(q);
+        return "list";
     }
 }
