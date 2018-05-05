@@ -32,6 +32,6 @@ public class CollectorTest {
         TaskDao dao = new TaskDao();
         List<String> urls = dao.getUrlsByState(0);
         Collector collector = new Collector();
-        collector.extractAndIndex(urls,true);
+        collector.extractAndIndex(urls,false);
     }
 }

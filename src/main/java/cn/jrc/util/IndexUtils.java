@@ -9,6 +9,7 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
+import org.apache.lucene.util.BytesRef;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 
 import java.io.IOException;
@@ -59,7 +60,9 @@ public class IndexUtils {
         document.add(new TextField("answers", answers, Field.Store.YES));
         String tags = GsonUtils.fromList2Json(pageInfo.getTags());
         document.add(new TextField("tags", tags, Field.Store.YES));
-        document.add(new StringField("date", pageInfo.getDate().toString(), Field.Store.YES));
+//        document.add(new StringField("date", pageInfo.getDate().toString(), Field.Store.NO));
+        document.add(new SortedDocValuesField("date", new BytesRef(DateTools.dateToString(pageInfo.getDate(), DateTools.Resolution.SECOND))));
+        document.add(new StoredField("date", DateTools.dateToString(pageInfo.getDate(), DateTools.Resolution.SECOND)));
         document.add(new TextField("description", pageInfo.getDescription(), Field.Store.YES));
         return document;
     }

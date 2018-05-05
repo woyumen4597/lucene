@@ -53,7 +53,7 @@ public class TaskDao extends BaseDao {
     public List<String> getUrlsByState(int state) {
         connection = getConnection();
         List<String> urls = new ArrayList<>();
-        String sql = "SELECT url FROM task WHERE state = ? AND update_time IS NULL";
+        String sql = "SELECT url FROM task WHERE state = ? limit 200";
         try {
             psmt = connection.prepareStatement(sql);
             psmt.setInt(1, state);

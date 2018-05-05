@@ -1,6 +1,5 @@
 package cn.jrc.crawler;
 
-import cn.jrc.dao.TaskDao;
 import cn.jrc.task.DeriveTask;
 import cn.jrc.task.ExtractAndIndexTask;
 import cn.jrc.util.CollectorUtils;
@@ -20,12 +19,11 @@ import java.util.concurrent.LinkedBlockingDeque;
  */
 public class Collector {
     public static Logger LOG = LoggerFactory.getLogger(Collector.class);
-    public static int MAX_NUM = 5000;
+    public volatile static int MAX_NUM = 5000;
     private static LinkedBlockingDeque<String> urlQueue = new LinkedBlockingDeque<>(MAX_NUM);
     private static ExecutorService executorService = Executors.newCachedThreadPool();
     public static boolean DONE = false;
     private List<String> seeds;
-    private TaskDao dao = new TaskDao();
 
     public Collector() {
     }
@@ -69,7 +67,7 @@ public class Collector {
         while (!urlQueue.isEmpty()) {
             try {
                 String url = urlQueue.take();
-                executorService.submit(new ExtractAndIndexTask(url, endGate,update));
+                executorService.submit(new ExtractAndIndexTask(url, endGate, update));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -83,16 +81,9 @@ public class Collector {
         System.out.println("结束");
     }
 
-    public void extractAndIndex(List<String> urls,boolean update) {
+    public void extractAndIndex(List<String> urls, boolean update) {
         CollectorUtils.convertListToQueue(urls, urlQueue);
         extractAndIndex(update);
     }
 
-    public List<String> getSeeds() {
-        return seeds;
-    }
-
-    public void setSeeds(List<String> seeds) {
-        this.seeds = seeds;
-    }
 }
