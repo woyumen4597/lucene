@@ -1,8 +1,6 @@
 package cn.jrc.test;
 
-import cn.edu.hfut.dmic.webcollector.model.Page;
 import cn.jrc.domain.PageInfo;
-import cn.jrc.util.Downloader;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

@@ -11,15 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2018/1/17 10:26
  */
 @SpringBootApplication
-@RestController
 public class LuceneApplication {
-
-    @RequestMapping("/hello")
-    public String index(){
-        return "hello Lucene";
-    }
-
     public static void main(String[] args) {
-        SpringApplication.run(LuceneApplication.class,args);
+        SpringApplication.run(LuceneApplication.class, args);
     }
 }
