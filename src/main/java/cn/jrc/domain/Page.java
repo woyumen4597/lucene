@@ -14,6 +14,17 @@ public class Page <T>{
     private int limit;
     private List<T> list;
 
+    @Override
+    public String toString() {
+        return "Page{" +
+                "pageNum=" + pageNum +
+                ", totalCount=" + totalCount +
+                ", totalPage=" + totalPage +
+                ", limit=" + limit +
+                ", list=" + list +
+                '}';
+    }
+
     public int getPageNum() {
         return pageNum;
     }

@@ -2,7 +2,6 @@ package cn.jrc.test;
 
 import cn.jrc.crawler.Collector;
 import cn.jrc.dao.TaskDao;
-import cn.jrc.domain.Task;
 import cn.jrc.util.FileUtils;
 import org.junit.Test;
 import java.util.List;

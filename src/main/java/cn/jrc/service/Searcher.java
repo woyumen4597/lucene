@@ -56,6 +56,9 @@ public class Searcher {
 
     /**
      * @param queryString
+     * @param begin
+     * @param limit
+     * @return list of result
      * @throws IOException
      * @throws ParseException
      * @throws InvalidTokenOffsetsException
@@ -123,10 +126,9 @@ public class Searcher {
     }
 
 
-    public Page<Result> getPage(String queryString, int pageNum) {
+    public Page<Result> getPage(String queryString, int pageNum, int limit) {
         Page<Result> page = new Page<>();
         page.setPageNum(pageNum);
-        int limit = 3;
         page.setLimit(limit);
         try {
             int totalCount = getCount(queryString);
@@ -137,22 +139,10 @@ public class Searcher {
             List<Result> list = search(queryString, begin, limit);
             page.setList(list);
             return page;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (InvalidTokenOffsetsException e) {
+        } catch (IOException | ParseException | InvalidTokenOffsetsException e) {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public static void main(String[] args) throws IOException, InvalidTokenOffsetsException, ParseException {
-        Searcher searcher = new Searcher();
-        List<Result> results = searcher.search("java c++", 4, 4);
-        for (Result result : results) {
-            System.out.println(result);
-        }
     }
 
 }
