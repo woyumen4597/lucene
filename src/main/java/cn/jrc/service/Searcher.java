@@ -4,6 +4,7 @@ import cn.jrc.domain.Page;
 import cn.jrc.domain.Result;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -20,7 +21,9 @@ import org.wltea.analyzer.lucene.IKAnalyzer;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -48,7 +51,7 @@ public class Searcher {
         this.desc = desc;
     }
 
-    public IndexSearcher getIndexSearcher() throws IOException {
+    private IndexSearcher getIndexSearcher() throws IOException {
         reader = DirectoryReader.open(FSDirectory.open(Paths.get("./indexDir")));
         searcher = new IndexSearcher(reader);
         return searcher;
@@ -63,7 +66,7 @@ public class Searcher {
      * @throws ParseException
      * @throws InvalidTokenOffsetsException
      */
-    public List<Result> search(String queryString, int begin, int limit) throws IOException, ParseException, InvalidTokenOffsetsException {
+    private List<Result> search(String queryString, int begin, int limit) throws IOException, ParseException, InvalidTokenOffsetsException {
         List<Result> list = new ArrayList<>();
         TopDocs topDocs = getTopDocs(queryString);
         LOG.info("Find Place " + topDocs.totalHits);
@@ -80,22 +83,31 @@ public class Searcher {
             Document doc = searcher.doc(scoreDoc.doc);
             String description = doc.get("description");
             Result result = new Result();
-            if (description != null) {
-                TokenStream tokenStream = analyzer.tokenStream("description", new StringReader(description));
-                // TokenStream将查询出来的搞成片段，得到的是整个内容
-                description = highlighter.getBestFragment(tokenStream, description);
-                result.setDescription(description);
-                result.setUrl(doc.get("url"));
-                result.setDate(doc.get("date"));
-                result.setTitle(doc.get("title"));
+            TokenStream tokenStream = analyzer.tokenStream("description", new StringReader(description));
+            // TokenStream将查询出来的搞成片段，得到的是整个内容
+            description = highlighter.getBestFragment(tokenStream, description);
+            if (description == null) {
+                description = doc.get("description");
             }
+            description = description.substring(1, Math.min(description.length(), 200)) + "...";
+            result.setDescription(description);
+            result.setUrl(doc.get("url"));
+            try {
+                Date date = DateTools.stringToDate(doc.get("date"));
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
+                String format = simpleDateFormat.format(date);
+                result.setDate(format);
+            } catch (java.text.ParseException e) {
+                e.printStackTrace();
+            }
+            result.setTitle(doc.get("title"));
             list.add(result);
         }
         reader.close();
         return list;
     }
 
-    public TopDocs getTopDocs(String queryString) throws IOException, ParseException {
+    private TopDocs getTopDocs(String queryString) throws IOException, ParseException {
         TopDocs topDocs = null;
         searcher = getIndexSearcher();
         analyzer = new IKAnalyzer();
@@ -115,13 +127,16 @@ public class Searcher {
                 .add(answerQuery, BooleanClause.Occur.SHOULD).build();
         query = booleanQuery.rewrite(reader);
         //sort
+        SortField titleSort = new SortField("title", SortField.Type.SCORE, false);
+        SortField descriptionSort = new SortField("description", SortField.Type.SCORE, false);
+        SortField answersSort = new SortField("answers", SortField.Type.SCORE, false);
         SortField sortField = new SortField("date", SortField.Type.STRING, desc);
-        Sort sort = new Sort(new SortField[]{sortField});
+        Sort sort = new Sort(new SortField[]{titleSort, descriptionSort, answersSort, sortField});
         topDocs = searcher.search(query, MAX_NUM, sort);
         return topDocs;
     }
 
-    public int getCount(String queryString) throws IOException, ParseException {
+    private int getCount(String queryString) throws IOException, ParseException {
         return (int) getTopDocs(queryString).totalHits;
     }
 
@@ -134,6 +149,7 @@ public class Searcher {
             int totalCount = getCount(queryString);
             page.setTotalCount(totalCount);
             int totalPage = (int) Math.ceil(totalCount * 1.0 / limit);
+            totalPage = Math.min(10, totalPage);
             page.setTotalPage(totalPage);
             int begin = (pageNum - 1) * limit;
             List<Result> list = search(queryString, begin, limit);

@@ -27,7 +27,8 @@ public class STOCrawler extends Crawler {
 
     @Override
     public boolean match(String link) {
-        return Pattern.matches("https://stackoverflow.com/questions/[0-9]+.*", link);
+        return Pattern.matches("https://stackoverflow.com/questions/[0-9]+.*", link)
+                && !link.contains("?") && !link.contains("#");
     }
 
     @Override
