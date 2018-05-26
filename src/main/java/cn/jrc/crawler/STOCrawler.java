@@ -18,8 +18,6 @@ import java.util.regex.Pattern;
  * @date 2018/2/25 15:55
  */
 public class STOCrawler extends Crawler {
-
-
     public STOCrawler(String url) throws IOException {
         super(url);
     }
@@ -35,20 +33,20 @@ public class STOCrawler extends Crawler {
     public PageInfo handle(Document document, String url) {
         PageInfo pageInfo = new PageInfo();
         String title = document.select("div#question-header>h1>a.question-hyperlink").text();
-        pageInfo.setTitle(title);
         String description = document.select("div.post-text").get(0).text();
-        pageInfo.setDescription(description);
         Elements select = document.select("div.post-taglist>a");
         ArrayList<String> tags = new ArrayList<>();
         for (Element element : select) {
             tags.add(element.text());
         }
-        pageInfo.setTags(tags);
         ArrayList<String> answers = new ArrayList<>();
         Elements elements = document.select("div.answercell>div.post-text");
         for (Element element : elements) {
             answers.add(element.text());
         }
+        pageInfo.setTitle(title);
+        pageInfo.setDescription(description);
+        pageInfo.setTags(tags);
         pageInfo.setAnswers(answers);
         pageInfo.setUrl(url);
         pageInfo.setDate(new Date());

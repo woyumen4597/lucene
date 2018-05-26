@@ -9,10 +9,8 @@ import java.util.Properties;
  * Created by Lucas.Jin on 2018/3/28.
  */
 public class BaseDao {
-    // 驱动包名和数据库url
     private static String url = null;
     private static String driverClass = null;
-    // 数据库用户名和密码
     private static String userName = null;
     private static String password = null;
     Connection connection = null;
@@ -44,9 +42,6 @@ public class BaseDao {
         return null;
     }
 
-    /**
-     * 清理环境，关闭连接(顺序:后打开的先关闭)
-     */
     public static void close(Connection conn, Statement stmt, ResultSet rs) {
         if (rs == null) {
         } else {

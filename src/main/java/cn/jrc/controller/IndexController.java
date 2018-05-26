@@ -6,12 +6,12 @@ import cn.jrc.service.Searcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
 /**
  * @author Created By Jrc
@@ -26,10 +26,17 @@ public class IndexController {
     private Searcher searcher;
 
     @RequestMapping("/")
-    public String ss(ModelMap modelMap) {
+    public String index() {
         return "index";
     }
 
+    /**
+     * return page.html with Page<result>
+     * @param q queryString
+     * @param pageNum
+     * @param model
+     * @return
+     */
     @RequestMapping("/query")
     public String query(@RequestParam String q, @RequestParam(required = false) String pageNum, Model model) {
         LOG.info("Query: " + q);
@@ -49,5 +56,24 @@ public class IndexController {
     @RequestMapping("/page")
     public String page() {
         return "page";
+    }
+
+
+    @RequestMapping("/api/modify")
+    public ResponseEntity modify(){
+        searcher.modify();
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping("/api/collect")
+    public ResponseEntity collect(){
+        searcher.collect();
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping("/api/update")
+    public ResponseEntity update(@RequestParam("date") String date){
+        searcher.update(date);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

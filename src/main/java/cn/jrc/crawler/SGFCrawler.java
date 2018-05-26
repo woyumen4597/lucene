@@ -34,21 +34,21 @@ public class SGFCrawler extends Crawler {
     public PageInfo handle(Document document, String url) {
         PageInfo pageInfo = new PageInfo();
         String title = document.select("h1#questionTitle>a").text();
-        pageInfo.setTitle(title);
         Elements elements = document.select("a.tag");
         ArrayList<String> tags = new ArrayList<>();
         for (Element element : elements) {
             tags.add(element.text());
         }
-        pageInfo.setTags(tags);
-        pageInfo.setUrl(url);
         String description = document.select("div.question").text();
-        pageInfo.setDescription(description);
         ArrayList<String> answers = new ArrayList<>();
         Elements elements1 = document.select("div.answer");
         for (Element element : elements1) {
             answers.add(element.text());
         }
+        pageInfo.setTitle(title);
+        pageInfo.setTags(tags);
+        pageInfo.setUrl(url);
+        pageInfo.setDescription(description);
         pageInfo.setAnswers(answers);
         pageInfo.setDate(new Date());
         return pageInfo;

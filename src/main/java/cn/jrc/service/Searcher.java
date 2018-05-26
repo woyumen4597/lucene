@@ -1,7 +1,10 @@
 package cn.jrc.service;
 
+import cn.jrc.crawler.Collector;
+import cn.jrc.dao.TaskDao;
 import cn.jrc.domain.Page;
 import cn.jrc.domain.Result;
+import cn.jrc.util.FileUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.document.DateTools;
@@ -15,6 +18,7 @@ import org.apache.lucene.search.highlight.*;
 import org.apache.lucene.store.FSDirectory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 
@@ -40,10 +44,17 @@ public class Searcher {
     private Analyzer analyzer;
     private boolean desc = true;
     private int MAX_NUM = 100;
+    private Collector collector;
+    private static String SEEDS = "./files/seeds.txt";
+
+    @Autowired
+    private TaskDao dao;
+
+
 
     /**
      * sort desc by date as default
-     * false 代表按时间倒序
+     * false order by date desc
      *
      * @param desc:true represents desc by date,false represents asc by date
      */
@@ -70,13 +81,12 @@ public class Searcher {
         List<Result> list = new ArrayList<>();
         TopDocs topDocs = getTopDocs(queryString);
         LOG.info("Find Place " + topDocs.totalHits);
-        QueryScorer scorer = new QueryScorer(query);// 查询得分
-        Fragmenter fragmenter = new SimpleSpanFragmenter(scorer);// 得到得分的片段，就是得到一段包含所查询的关键字的摘要
+        QueryScorer scorer = new QueryScorer(query);// query score
+        Fragmenter fragmenter = new SimpleSpanFragmenter(scorer);// get digest which score
         SimpleHTMLFormatter simpleHTMLFormatter = new SimpleHTMLFormatter(
-                "<b><font color='red'>", "</font></b>");// 对查询的数据格式化；无参构造器的默认是将关键字加粗
-        Highlighter highlighter = new Highlighter(simpleHTMLFormatter, scorer);// 根据得分和格式化
-        highlighter.setTextFragmenter(fragmenter);// 设置成高亮
-        // 遍历topdocs查询结果,使用middle变量解决查询越界错误
+                "<b><font color='red'>", "</font></b>");// formatter
+        Highlighter highlighter = new Highlighter(simpleHTMLFormatter, scorer);
+        highlighter.setTextFragmenter(fragmenter);// highlight
         int middle = (int) Math.min(begin + limit, topDocs.totalHits);
         for (int i = begin; i < middle; i++) {
             ScoreDoc scoreDoc = topDocs.scoreDocs[i];
@@ -84,7 +94,6 @@ public class Searcher {
             String description = doc.get("description");
             Result result = new Result();
             TokenStream tokenStream = analyzer.tokenStream("description", new StringReader(description));
-            // TokenStream将查询出来的搞成片段，得到的是整个内容
             description = highlighter.getBestFragment(tokenStream, description);
             if (description == null) {
                 description = doc.get("description");
@@ -161,4 +170,33 @@ public class Searcher {
         return null;
     }
 
+    /**
+     * error control(use database to modify urls which was indexed fail)
+     */
+    public void modify(){
+        List<String> urls = dao.getUrlsByState(0);
+        collector = new Collector(urls);
+        collector.extractAndIndex(false);
+    }
+
+
+    /**
+     * collect index
+     */
+    public void collect(){
+        List<String> seeds = FileUtils.readFromFile(SEEDS);
+        collector = new Collector(seeds);
+        collector.collect();
+    }
+
+
+    /**
+     * incremental update for index
+     * @param date  update_time in this date
+     */
+    public void update(String date){
+        List<String> urls = dao.getUrlsByDate(date);
+        collector = new Collector(urls);
+        collector.extractAndIndex(true);
+    }
 }

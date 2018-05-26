@@ -5,6 +5,7 @@ import cn.jrc.task.ExtractAndIndexTask;
 import cn.jrc.util.CollectorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -13,20 +14,18 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
 
 /**
+ * Collector Framework
  * @author Created By Jrc
  * @version v.0.1
  * @date 2018/4/5 14:08
  */
 public class Collector {
     public static Logger LOG = LoggerFactory.getLogger(Collector.class);
-    public volatile static int MAX_NUM = 5000;
+    public volatile static int MAX_NUM = 1000;
     private static LinkedBlockingDeque<String> urlQueue = new LinkedBlockingDeque<>(MAX_NUM);
     private static ExecutorService executorService = Executors.newCachedThreadPool();
     public static boolean DONE = false;
     private List<String> seeds;
-
-    public Collector() {
-    }
 
     public Collector(List<String> seeds) {
         this.seeds = seeds;
@@ -42,6 +41,9 @@ public class Collector {
     }
 
 
+    /**
+     * derive more urls with seeds
+     */
     private void deriveLinks() {
         while (!DONE) {
             String seed = null;
@@ -61,7 +63,7 @@ public class Collector {
         executorService.submit(new DeriveTask(seed, urlQueue));
     }
 
-    private void extractAndIndex(boolean update) {
+    public void extractAndIndex(boolean update) {
         CountDownLatch endGate = new CountDownLatch(urlQueue.size());
         LOG.info("Count: " + urlQueue.size());
         while (!urlQueue.isEmpty()) {
@@ -78,12 +80,9 @@ public class Collector {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("结束");
+        LOG.info("Collect Ends");
     }
 
-    public void extractAndIndex(List<String> urls, boolean update) {
-        CollectorUtils.convertListToQueue(urls, urlQueue);
-        extractAndIndex(update);
-    }
+
 
 }

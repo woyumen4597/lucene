@@ -1,10 +1,5 @@
 package cn.jrc.test;
 
-import cn.jrc.crawler.Collector;
-import cn.jrc.crawler.Crawler;
-import cn.jrc.crawler.STOCrawler;
-import cn.jrc.dao.TaskDao;
-import cn.jrc.util.IndexUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -21,8 +16,6 @@ import org.wltea.analyzer.lucene.IKAnalyzer;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Created By Jrc
@@ -30,8 +23,11 @@ import java.util.List;
  * @date 2018/2/20 19:35
  */
 public class IndexTest {
+    public static String INDEX_DIR = "./indexDir";
+
+
     public IndexSearcher getIndexSearcher() throws IOException {
-        IndexReader reader = DirectoryReader.open(FSDirectory.open(Paths.get("./indexDir")));
+        IndexReader reader = DirectoryReader.open(FSDirectory.open(Paths.get(INDEX_DIR)));
         IndexSearcher searcher = new IndexSearcher(reader);
         return searcher;
     }
@@ -54,7 +50,9 @@ public class IndexTest {
         TopDocs topDocs = searcher.search(query, 10);
         for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
             Document doc = searcher.doc(scoreDoc.doc);
-            System.out.println(doc.getField("title"));
+            IndexableField title = doc.getField("title");
+            Assert.assertTrue(title.toString().toLowerCase().contains("webpack")||
+            title.toString().toLowerCase().contains("server"));
         }
     }
 
@@ -151,29 +149,6 @@ public class IndexTest {
         //多个add之间认为是OR操作，即(has lots)和bridges之间的slop不大于3，不计算标点
         MultiPhraseQuery multiPhraseQuery = new MultiPhraseQuery.Builder().add(terms).add(term2).setSlop(3).build();
         search(multiPhraseQuery);
-    }
-
-    @Test
-    public void update() throws IOException {
-        String url = "https://stackoverflow.com/questions/9005572/pull-in-json-data";
-        Crawler crawler = new STOCrawler(url);
-        crawler.visit(true);
-    }
-
-    @Test
-    public void updateIndex() throws IOException {
-        TaskDao dao = new TaskDao();
-        List<String> urls = new ArrayList<>();
-        urls.add("https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript");
-//        List<String> urls = dao.getUrlsByState(1);
-        Collector collector = new Collector();
-        collector.extractAndIndex(urls, true);
-    }
-
-    @Test
-    public void deleteTerm() throws IOException {
-        Term term = new Term("url", "https://stackoverflow.com/questions/950087/how-do-i-include-a-javascript-file-in-another-javascript-file?lastactivity");
-        IndexUtils.delete(term);
     }
 
 }

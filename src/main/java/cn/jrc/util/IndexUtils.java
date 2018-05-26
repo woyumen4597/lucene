@@ -4,8 +4,6 @@ import cn.jrc.domain.PageInfo;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.*;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
@@ -14,7 +12,6 @@ import org.wltea.analyzer.lucene.IKAnalyzer;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 
 /**
  * @author Created By Jrc
@@ -22,14 +19,20 @@ import java.util.ArrayList;
  * @date 2018/2/20 18:58
  */
 public class IndexUtils {
-    private static String indexDir = "./indexDir";
+    private static String INDEXDIR = "./indexDir";
 
     public static IndexSearcher getIndexSearcher() throws IOException {
-        IndexReader reader = DirectoryReader.open(FSDirectory.open(Paths.get(indexDir)));
+        IndexReader reader = DirectoryReader.open(FSDirectory.open(Paths.get(INDEXDIR)));
         IndexSearcher searcher = new IndexSearcher(reader);
         return searcher;
     }
 
+    /**
+     * index the PageInfo to local index library disk
+     * @param pageInfo
+     * @param indexDir
+     * @throws IOException
+     */
     public static void index(PageInfo pageInfo, String indexDir) throws IOException {
         Directory directory = FSDirectory.open(Paths.get(indexDir));
         IKAnalyzer analyzer = new IKAnalyzer();
@@ -48,6 +51,10 @@ public class IndexUtils {
 
     }
 
+    /** add document
+     * @param pageInfo
+     * @return document
+     */
     private static Document addDocument(PageInfo pageInfo) {
         Document document = new Document();
         FieldType type = new FieldType();
@@ -60,9 +67,10 @@ public class IndexUtils {
         document.add(new TextField("answers", answers, Field.Store.YES));
         String tags = GsonUtils.fromList2Json(pageInfo.getTags());
         document.add(new TextField("tags", tags, Field.Store.YES));
-//        document.add(new StringField("date", pageInfo.getDate().toString(), Field.Store.NO));
-        document.add(new SortedDocValuesField("date", new BytesRef(DateTools.dateToString(pageInfo.getDate(), DateTools.Resolution.SECOND))));
-        document.add(new StoredField("date", DateTools.dateToString(pageInfo.getDate(), DateTools.Resolution.SECOND)));
+        document.add(new SortedDocValuesField("date",
+                new BytesRef(DateTools.dateToString(pageInfo.getDate(), DateTools.Resolution.SECOND))));
+        document.add(new StoredField("date",
+                DateTools.dateToString(pageInfo.getDate(), DateTools.Resolution.SECOND)));
         document.add(new TextField("description", pageInfo.getDescription(), Field.Store.YES));
         return document;
     }
@@ -87,8 +95,12 @@ public class IndexUtils {
         }
     }
 
+    /** delete doc by term
+     * @param term
+     * @throws IOException
+     */
     public static void delete(Term term) throws IOException {
-        Directory directory = FSDirectory.open(Paths.get(indexDir));
+        Directory directory = FSDirectory.open(Paths.get(INDEXDIR));
         IKAnalyzer analyzer = new IKAnalyzer();
         IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
         iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
+ * 封装信息的JavaBean
+ *
  * @author Created By Jrc
  * @version v.0.1
  * @date 2018/2/20 16:24
@@ -26,7 +28,6 @@ public class PageInfo {
     }
 
     public String getUrl() {
-
         return url;
     }
 
@@ -41,7 +42,6 @@ public class PageInfo {
     public void setTitle(String title) {
         this.title = title;
     }
-
 
 
     public String getDescription() {
@@ -70,6 +70,6 @@ public class PageInfo {
 
     @Override
     public String toString() {
-        return "PageInfo["+getUrl()+"]";
+        return "PageInfo[" + getUrl() + "]";
     }
 }

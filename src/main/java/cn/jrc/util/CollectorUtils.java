@@ -9,6 +9,11 @@ import java.util.concurrent.LinkedBlockingDeque;
  * @date 2018/4/5 14:20
  */
 public class CollectorUtils {
+    /**
+     * convert list to queue
+     * @param list
+     * @param queue
+     */
     public static void convertListToQueue(List list, LinkedBlockingDeque queue) {
         for (Object o : list) {
             try {

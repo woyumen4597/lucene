@@ -33,8 +33,8 @@ public abstract class Crawler {
     public static final Logger LOG = LoggerFactory.getLogger(Crawler.class);
     private static final HttpClientBuilder HTTP_CLIENT_BUILDER;
     private static final CloseableHttpClient CLIENT;
-    private static String indexDir = "./indexDir";
-    private static final String USERAGENT = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; QQDownload 1.7; .NET CLR 1.1.4322; CIBA; .NET CLR 2.0.50727)";
+    private static String INDEXDIR = "./indexDir";
+    private static final String USER_AGENT = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; QQDownload 1.7; .NET CLR 1.1.4322; CIBA; .NET CLR 2.0.50727)";
 
     static {
         System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
@@ -56,7 +56,7 @@ public abstract class Crawler {
     public Crawler(String url) throws IOException {
         this.url = url;
         HttpGet get = new HttpGet(url);
-        get.addHeader("User-Agent", USERAGENT);
+        get.addHeader("User-Agent", USER_AGENT);
         CloseableHttpResponse response = null;
         try {
             response = CLIENT.execute(get);
@@ -106,14 +106,13 @@ public abstract class Crawler {
     }
 
     /**
-     * 判断url是否符合要求
-     *
-     * @return
+     * whether link is match
+     * @return true:match,false:not match
      */
     public abstract boolean match(String link);
 
     /**
-     * 处理页面返回PageInfo对象
+     * handle page to return PageInfo object
      *
      * @param document
      * @param url
@@ -125,9 +124,9 @@ public abstract class Crawler {
         try {
             LOG.info("Index Start: " + pageInfo.toString());
             if (update) {
-                IndexUtils.update(pageInfo, indexDir);
+                IndexUtils.update(pageInfo, INDEXDIR);
             } else {
-                IndexUtils.index(pageInfo, indexDir);
+                IndexUtils.index(pageInfo, INDEXDIR);
             }
             LOG.info("Index End: " + pageInfo.toString());
         } catch (IOException e) {

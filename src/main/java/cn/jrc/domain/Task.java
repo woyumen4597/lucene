@@ -2,9 +2,9 @@ package cn.jrc.domain;
 
 /**
  * state:
- * 0 未抓
- * 1 已抽取
- * 2 抓取失败
+ * 0 not yet crawl
+ * 1 crawled
+ * 2 crawl fail
  * Created by Lucas.Jin on 2018/3/29.
  */
 public class Task {

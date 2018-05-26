@@ -6,6 +6,8 @@ import cn.jrc.crawler.SGFCrawler;
 import cn.jrc.crawler.STOCrawler;
 import cn.jrc.dao.TaskDao;
 import cn.jrc.domain.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Set;
@@ -23,6 +25,7 @@ public class DeriveTask implements Runnable {
     private String seed;
     private BlockingDeque queue;
     private TaskDao dao = new TaskDao();
+    private Logger LOG = LoggerFactory.getLogger(DeriveTask.class);
 
     public DeriveTask(String seed, BlockingDeque queue) {
         this.seed = seed;
@@ -51,6 +54,7 @@ public class DeriveTask implements Runnable {
                     try {
                         if (!queue.contains(link) && dao.insert(new Task(link, Task.READY))) {
                             queue.put(link);
+                            LOG.info("Derive link : "+link);
                         }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
