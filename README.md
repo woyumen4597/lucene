@@ -7,13 +7,13 @@ Crawler
 
 This is a simple search engine powered by Lucene,developed by Intellij IDEA.
 
-## 2.Installing
+## 2. Installing
 _Use Maven for installing_
 - Environment:JDK1.8+,Apache Maven,Mysql,[Luke](https://code.google.com/archive/p/luke/)(Optional).
 - Requirements:[Apache Lucene](http://lucene.apache.org/),[Jsoup](https://jsoup.org/)
 ,[HttpClient](https://hc.apache.org/httpcomponents-client-ga/),[SpringFramework](https://projects.spring.io/spring-boot/)
 ,[Thymeleaf](https://www.thymeleaf.org/).
-## 3.Steps
+## 3. Steps
  
 ### Step1:clone this repository
 
