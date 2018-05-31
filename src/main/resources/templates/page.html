@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<style>
+    .g {
+        margin-top: 0;
+        margin-bottom: 26px;
+    }
+
+    .rc {
+        position: relative;
+    }
+
+    h3.r {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        -webkit-text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .st {
+        line-height: 1.4;
+        word-wrap: break-word;
+    }
+
+    .f, .f a:link {
+        color: #808080;
+    }
+
+    cite, cite a:link, cite a:visited {
+        color: #006621;
+        font-style: normal;
+    }
+
+    .iUh30 {
+        font-size: 14px;
+    }
+
+    .lst-c {
+        overflow: hidden;
+        margin-bottom: 50px;
+    }
+
+    .lst {
+        border: 2px solid lightblue;
+        width: 40%;
+        height: 35px;
+        margin-left: 20px;
+        padding-left: 10px;
+    }
+
+    .jsb {
+        float: none;
+        width: 10%;
+        height: 35px;
+    }
+
+    .img {
+        position: relative;
+        top: 20px
+    }
+
+    a.fl:link, .fl a, .flt, a.flt, .gl a:link, a.mblink, .mblink b {
+        color: #1a0dab;
+        line-height: 30px;
+        font-size: 20px;
+        margin: 10px;
+    }
+
+    .fi{
+        font-size: 30px;
+        color: red;
+        font-weight:bold;
+        text-align: center;
+        margin: 200px;
+    }
+</style>
+<body>
+<div th:fragment="pager">
+    <div class="lst-c">
+        <form th:action="@{/query}" method="GET">
+            <a th:href="@{/}"><img alt="JRC SOSO" height="44px"
+                                   th:src="@{logo.png}"
+                                   class="img"
+                                   width="120px"/></a>
+            <input class="lst" maxlength="2048"
+                   name="q" title="JRC SOSO 搜索" type="text"
+                   th:value="${param.q[0]}"
+                   aria-label="搜索"/>
+            <input class="jsb" value="JRC SOSO 搜索" aria-label="JRC SOSO 搜索" type="submit"/>
+        </form>
+    </div>
+    <span th:text="${msg}" class="fi"></span>
+    <div th:if="${msg==null}">
+        <div>找到约 <span th:text="${page.totalCount}"></span> 条结果
+        </div>
+        <div th:each="result : ${list}">
+            <div class="g">
+                <div data-hveid="43">
+                    <div class="rc">
+                        <h3 class="r">
+                            <a th:href="${result.url}" th:text="${result.title}" target="_blank"/>
+                        </h3>
+                        <cite class="iUh30" th:text="${result.url}"></cite><br/>
+                        <span class="f" th:text="${result.date}"></span>
+                        <div class="st" th:utext="${result.description}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span th:each="pageNum,iter : ${#numbers.sequence(1,10)}">
+        <a class="fl" th:href="@{/query(q=${param.q},pageNum=${pageNum})}" th:text="${pageNum}"></a>
+    </span>
+        <table>
+            <tr>
+                <td th:switch="${page.pageNum}">
+                    <p th:case="1"><a class="fl" th:href="@{/query(q=${param.q},pageNum=${page.pageNum})}">上一页</a></p>
+                    <p th:case="*"><a class="fl" th:href="@{/query(q=${param.q},pageNum=${page.pageNum-1})}">上一页</a></p>
+                </td>
+                <td th:switch="${page.pageNum}">
+                    <p th:case="${page.totalPage}">
+                        <a class="fl" th:href="@{/query(q=${param.q},pageNum=${page.totalPage})}">下一页</a>
+                    </p>
+                    <p th:case="*">
+                        <a class="fl" th:href="@{/query(q=${param.q},pageNum=${page.pageNum+1})}">下一页</a>
+                    </p>
+                </td>
+                <td>
+                    <a class="fl" th:href="@{/query(q=${param.q},pageNum=${page.totalPage})}">尾页</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>

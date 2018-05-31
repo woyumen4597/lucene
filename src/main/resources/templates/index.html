@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Index</title>
+    <style>
+        .content {
+            text-align: center;
+        }
+
+        .lst-c {
+            overflow: hidden;
+        }
+
+        .lst {
+            border: 2px solid lightblue;
+            width: 40%;
+            height: 34px;
+            padding-left: 10px;
+        }
+
+        .jsb {
+            float: none;
+            width: 10%;
+            height: 35px;
+        }
+
+        .ctr-p {
+            margin: 0 auto;
+            min-width: 980px
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="content" id="main">
+    <span class="ctr-p" id="body">
+        <div style="height:233px;margin-top:89px">
+            <img alt="JRC SOSO" height="92"
+                 th:src="@{logo.png}"
+                 style="padding-top:109px"
+                 width="272"/>
+        </div>
+    </span>
+
+    <div class="lst-c">
+        <form th:action="@{/query}" method="GET">
+            <input class="lst" maxlength="2048"
+                   name="q" title="JRC SOSO 搜索" type="text"
+                   value="" aria-label="搜索"/>
+            <input class="jsb" value="JRC SOSO 搜索" aria-label="JRC SOSO 搜索" type="submit"/>
+        </form>
+    </div>
+</div>
+
+
+</body>
+</html>
