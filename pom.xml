@@ -53,6 +53,15 @@
             <version>4.5.3</version>
         </dependency>
 
+        <!-- since ikAnalyzer is not in maven center repository,
+        so you need to find it then:
+            mvn install:install-file
+            -Dfile=/path/to/ikAnalyzer.jar
+            -DgroupId=com.lucene
+            -DartifactId=ikAnalyzer
+            -Dversion=6.5.0
+            -Dpackaging=jar
+          -->
         <dependency>
             <groupId>com.lucene</groupId>
             <artifactId>ikAnalyzer</artifactId>
